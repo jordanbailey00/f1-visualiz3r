@@ -237,9 +237,9 @@ export const CAR_MAT = {
   get electronics() {
     return phys("electronicsBox", { color: "#2f3237", metalness: 0.3, roughness: 0.6 });
   },
-  get yellowCam() {
-    // The T-camera on the airbox: yellow on the second car, black on the first.
-    return phys("tcamYellow", { color: "#f5d90a", roughness: 0.35, metalness: 0, clearcoat: 0.8, clearcoatRoughness: 0.15 });
+  /** Camera housings (the T-camera is black on a team's first car). */
+  get camera() {
+    return phys("cameraHousing", { color: "#141518", roughness: 0.4, metalness: 0.1, clearcoat: 0.6, clearcoatRoughness: 0.25 });
   },
   get lens() {
     return phys("lens", { color: "#0a0d14", metalness: 0.2, roughness: 0.05, clearcoat: 1 });
@@ -306,7 +306,7 @@ export function liveryMaterial(spec: LiverySpec) {
     roughness: spec.roughness ?? 0.32,
     metalness: 0.04,
     clearcoat: spec.clearcoat ?? 0.85,
-    clearcoatRoughness: 0.1,
+    clearcoatRoughness: 0.22,
   });
   m.name = `livery:${spec.key}`;
   const uniforms: Record<string, { value: unknown }> = {

@@ -1,21 +1,29 @@
 "use client";
 
 import { useMemo } from "react";
-import { BoxGeometry, CanvasTexture, CylinderGeometry, PlaneGeometry, SRGBColorSpace } from "three";
-import { FONT_SANS } from "@/lib/three/painter";
-import { AeroPivot, useMirrorSide } from "../../Part";
-import { CAR_MAT, glow, paintColour } from "../../kit/carMaterials";
+import { BoxGeometry, CylinderGeometry, type BufferGeometry } from "three";
+import { AeroPivot } from "../../Part";
+import { CAR_MAT, glow } from "../../kit/carMaterials";
 import { cached, mergeAll, roundedBox } from "../../kit/geometry";
 import { mirrorZ } from "../../kit/loft";
 import { rod } from "../../kit/strut";
 import { fullSpan, naca, plate, smoothOutline, wingElement, type WingStation } from "../../kit/wing";
-import { CRASH, REAR_WING } from "./layout";
-import { ACCENT, NAVY } from "./livery";
+import { CRASH, REAR_WING, TAILPIPE, Z } from "./layout";
 
 /** Highly cambered, inverted sections (the suction side faces the ground). */
 const MAIN = naca(0.075, 0.38, 0.085);
 const FLAP = naca(0.09, 0.42, 0.075);
 const THIN = naca(0, 0.4, 0.12, 16, false);
+const GURNEY = naca(0, 0.5, 0.3, 8, false);
+
+/** A Gurney strip (≤10 mm) along the trailing edge of an element's stations. */
+function gurney(stations: WingStation[]) {
+  return wingElement(
+    GURNEY,
+    stations.map((s) => ({ ...s, x: s.x - s.chord * Math.cos(s.angle) + 4, y: s.y + s.chord * Math.sin(s.angle) - 2, chord: 12, angle: 1.35 })),
+    4,
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Front wing (x from 2,950 to 2,175, |z| ≤ 675, y 105–345)
@@ -44,14 +52,15 @@ const FW_FLAP2: WingStation[] = fullSpan([
   { z: 636, x: 2400, y: 252, chord: 154, angle: 0.62 },
 ]);
 
-/** The primary flap (every element but the mainplane) pivots about its leading edge. */
+/** The primary flap (every element but the mainplane) pivots about an axis at its leading edge. */
 export const FW_HINGE: [number, number, number] = [2640, 150, 0];
 /** Incidence removed in Straight Mode (not set by the rules; ≈11° here). */
 export const FW_OPEN = 0.2;
 
 export function FrontMainplane() {
   const geo = useMemo(() => cached("car26-fw-main", () => wingElement(MAIN, FW_MAIN, 8)), []);
-  // Short pylons carry the nose tip down onto the mainplane.
+  // Pylons (≤35 mm thick) carry the nose tip down onto the mainplane; strakes
+  // under the wing steer the flow outboard.
   const pylons = useMemo(
     () =>
       cached("car26-fw-pylons", () => {
@@ -66,7 +75,26 @@ export function FrontMainplane() {
           14,
           36,
         );
-        return mergeAll([p, mirrorZ(p)]);
+        const strakes: BufferGeometry[] = [];
+        for (const [z, front, len] of [
+          [330, 2930, 340],
+          [470, 2915, 300],
+        ] as [number, number, number][]) {
+          strakes.push(
+            plate(
+              smoothOutline([
+                [front, 108],
+                [front - len, 118],
+                [front - len + 20, 82],
+                [front - 80, 66],
+              ]),
+              10,
+              z,
+            ),
+          );
+        }
+        const s = mergeAll(strakes);
+        return mergeAll([p, mirrorZ(p), s, mirrorZ(s)]);
       }),
     [],
   );
@@ -78,20 +106,14 @@ export function FrontMainplane() {
   );
 }
 
-/** Cyan Gurney strip along the top flap's trailing edge. */
-const fwGurney = (() => {
-  const st = FW_FLAP2.map((s) => ({ ...s, x: s.x - s.chord * Math.cos(s.angle) + 4, y: s.y + s.chord * Math.sin(s.angle) - 2, chord: 14, angle: 1.35 }));
-  return wingElement(naca(0, 0.5, 0.3, 8, false), st, 4);
-})();
-
 export function FrontFlaps() {
-  const flap1 = useMemo(() => cached("car26-fw-flap1", () => wingElement(FLAP, FW_FLAP1, 8)), []);
-  const flap2 = useMemo(() => cached("car26-fw-flap2", () => wingElement(FLAP, FW_FLAP2, 8)), []);
+  const geo = useMemo(
+    () => cached("car26-fw-flaps", () => mergeAll([wingElement(FLAP, FW_FLAP1, 8), wingElement(FLAP, FW_FLAP2, 8), gurney(FW_FLAP2)])),
+    [],
+  );
   return (
     <AeroPivot hinge={FW_HINGE} angle={FW_OPEN}>
-      <mesh geometry={flap1} material={CAR_MAT.carbon} castShadow receiveShadow />
-      <mesh geometry={flap2} material={CAR_MAT.carbon} castShadow receiveShadow />
-      <mesh geometry={fwGurney} material={paintColour("car26-cyan", ACCENT, { roughness: 0.3 })} castShadow />
+      <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />
     </AeroPivot>
   );
 }
@@ -99,7 +121,10 @@ export function FrontFlaps() {
 /** Endplate centre plane: the element tips (z = 636) end inside it. */
 const FW_EP_Z = 640;
 
-/** Endplates with footplates reaching out to 900 mm and a dive plane. */
+/**
+ * Front wing endplate (right side): the endplate body, the outboard
+ * footplate reaching to 900 mm, the inboard footplate and a dive plane.
+ */
 export function FrontEndplates() {
   const geo = useMemo(
     () =>
@@ -124,66 +149,56 @@ export function FrontEndplates() {
           12,
           z,
         );
-        // Footplate: a horizontal plate at the base running outboard.
-        const foot = plate(
-          smoothOutline([
+        const horizontal = (pts: [number, number][], thick: number, y: number, dz: number, tilt = 0) => {
+          const g = plate(smoothOutline(pts), thick, 0);
+          g.rotateX(Math.PI / 2 - tilt);
+          g.translate(0, y, z + dz);
+          return g;
+        };
+        // Outboard footplate: a horizontal plate at the base running out to 900 mm.
+        const foot = horizontal(
+          [
             [2900, 0],
             [2850, 96],
             [2620, 118],
             [2420, 104],
             [2380, 20],
             [2500, -10],
-          ]),
+          ],
           8,
-          0,
+          122,
+          18,
         );
-        foot.rotateX(Math.PI / 2);
-        foot.translate(0, 122, z + 18);
+        // Inboard footplate: a narrow lip on the inner face at the base.
+        const inner = horizontal(
+          [
+            [2880, 0],
+            [2840, 40],
+            [2300, 40],
+            [2280, 0],
+          ],
+          6,
+          124,
+          -46,
+        );
         // Dive plane on the outer face.
-        const dive = plate(
-          smoothOutline([
+        const dive = horizontal(
+          [
             [2900, 0],
             [2860, 70],
             [2620, 78],
             [2560, 10],
-          ]),
+          ],
           6,
-          0,
+          292,
+          8,
+          0.12,
         );
-        dive.rotateX(Math.PI / 2 - 0.12);
-        dive.translate(0, 292, z + 8);
-        return mergeAll([ep, foot, dive]);
+        return mergeAll([ep, foot, inner, dive]);
       }),
     [],
   );
-  // Cyan leading edge strip on the outer face.
-  const stripe = useMemo(
-    () =>
-      cached("car26-fw-ep-stripe", () => {
-        const z = FW_EP_Z + 6.6;
-        const s = plate(
-          smoothOutline([
-            [2962, 150],
-            [2970, 230],
-            [2934, 340],
-            [2900, 356],
-            [2932, 230],
-            [2924, 150],
-          ]),
-          1.2,
-          z,
-          0.3,
-        );
-        return s;
-      }),
-    [],
-  );
-  return (
-    <group>
-      <mesh geometry={geo} material={CAR_MAT.carbonSatin} castShadow receiveShadow />
-      <mesh geometry={stripe} material={paintColour("car26-cyan", ACCENT, { roughness: 0.3 })} />
-    </group>
-  );
+  return <mesh geometry={geo} material={CAR_MAT.carbonSatin} castShadow receiveShadow />;
 }
 
 /** Hydraulic actuator in the nose that rotates the primary flap. */
@@ -215,69 +230,67 @@ const RW_MAIN: WingStation[] = fullSpan([
 const flapAt = (z: number): WingStation => ({ z, x: -2112, y: 834, chord: 186, angle: 0.5 });
 const RW_FLAP: WingStation[] = fullSpan([flapAt(0), flapAt(300), flapAt(REAR_WING.fixedTip)]);
 
-/** The flap pivots between its mid-chord and trailing edge (here at 70%). */
+/** The flap pivots about one axis between its mid-chord and trailing edge (here at 70%). */
 export const RW_HINGE: [number, number, number] = [-2112 - 0.7 * 186 * Math.cos(0.5), 834 + 0.7 * 186 * Math.sin(0.5), 0];
 export const RW_OPEN = 0.42;
 
 export function RearMainplane() {
-  const geo = useMemo(() => cached("car26-rw-main", () => wingElement(MAIN, RW_MAIN, 6)), []);
-  // Fixed flap tips outboard of 535 mm.
-  const tips = useMemo(
+  const geo = useMemo(
     () =>
-      cached("car26-rw-tips", () => {
-        const t = wingElement(FLAP, [flapAt(REAR_WING.fixedTip + 3), flapAt(567)], 2);
-        return mergeAll([t, mirrorZ(t)]);
+      cached("car26-rw-main", () => {
+        // Fixed flap tips outboard of 535 mm, with their own Gurneys.
+        const tipStations = [flapAt(REAR_WING.fixedTip + 3), flapAt(567)];
+        const tips = mergeAll([wingElement(FLAP, tipStations, 2), gurney(tipStations)]);
+        return mergeAll([wingElement(MAIN, RW_MAIN, 6), tips, mirrorZ(tips)]);
       }),
     [],
   );
-  return (
-    <group>
-      <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />
-      <mesh geometry={tips} material={CAR_MAT.carbon} castShadow receiveShadow />
-    </group>
-  );
+  return <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />;
 }
 
 export function RearFlap() {
-  const geo = useMemo(() => cached("car26-rw-flap", () => wingElement(FLAP, RW_FLAP, 6)), []);
+  const geo = useMemo(() => cached("car26-rw-flap", () => mergeAll([wingElement(FLAP, RW_FLAP, 6), gurney(RW_FLAP)])), []);
   return (
     <AeroPivot hinge={RW_HINGE} angle={RW_OPEN}>
       <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />
-      {/* Cyan Gurney strip along the trailing edge. */}
-      <mesh
-        geometry={cached("car26-rw-gurney", () => new BoxGeometry(5, 9, REAR_WING.fixedTip * 2 - 6))}
-        material={paintColour("car26-cyan", ACCENT, { roughness: 0.3 })}
-        position={[-2112 - 186 * Math.cos(0.5) + 1, 834 + 186 * Math.sin(0.5) + 3, 0]}
-        rotation={[0, 0, 0.5]}
-      />
     </AeroPivot>
   );
 }
 
-let numberTex: CanvasTexture | null = null;
-/** The car's race number, as carried on the endplates and nose. */
-export function numberTexture() {
-  if (numberTex) return numberTex;
-  const c = document.createElement("canvas");
-  c.width = 512;
-  c.height = 512;
-  const g = c.getContext("2d")!;
-  g.clearRect(0, 0, 512, 512);
-  g.fillStyle = "#eef1f4";
-  g.font = `700 380px ${FONT_SANS}`;
-  g.textAlign = "center";
-  g.textBaseline = "middle";
-  g.fillText("26", 256, 270);
-  numberTex = new CanvasTexture(c);
-  numberTex.colorSpace = SRGBColorSpace;
-  return numberTex;
+/**
+ * Rear wing separators (3–5 pairs are mandatory, C3.11.7): small blocks that
+ * hold the slot gap between mainplane and flap in Corner Mode, and the
+ * rotation brackets carrying the flap's pivot.
+ */
+export function RearSeparators() {
+  const geo = useMemo(
+    () =>
+      cached("car26-rw-separators", () => {
+        // In the slot, just behind the mainplane's trailing edge.
+        const sx = -1872 - 262 * Math.cos(0.16) + 4;
+        const sy = 786 + 262 * Math.sin(0.16) + 9;
+        const parts: BufferGeometry[] = [];
+        for (const z of [130, 300, 470]) {
+          const b = roundedBox(34, 22, 8, 3).clone().translate(sx, sy, z);
+          parts.push(b, mirrorZ(b));
+        }
+        // Rotation brackets: one on the centre line, one at each fixed tip.
+        parts.push(roundedBox(70, 60, 16, 4).clone().translate(RW_HINGE[0], RW_HINGE[1] - 22, 0));
+        const tip = roundedBox(60, 50, 10, 4).clone().translate(RW_HINGE[0], RW_HINGE[1] - 18, REAR_WING.fixedTip + 1);
+        parts.push(tip, mirrorZ(tip));
+        return mergeAll(parts);
+      }),
+    [],
+  );
+  return <mesh geometry={geo} material={CAR_MAT.titanium} castShadow />;
 }
 
+/** Rear wing endplate (right side) with its FIA LED light, 700–870 mm above the reference plane. */
 export function RearEndplates() {
   const geo = useMemo(
     () =>
-      cached("car26-rw-endplates", () => {
-        const ep = plate(
+      cached("car26-rw-endplates", () =>
+        plate(
           smoothOutline(
             [
               [-1852, 770],
@@ -295,41 +308,23 @@ export function RearEndplates() {
           ),
           10,
           REAR_WING.half - 5,
-        );
-        return ep;
-      }),
+        ),
+      ),
     [],
   );
-  const leds = useMemo(
-    () =>
-      cached("car26-rw-leds", () => {
-        return new BoxGeometry(12, 150, 12).translate(-2412, 800, REAR_WING.half - 5);
-      }),
-    [],
-  );
-  const side = useMirrorSide();
-  const number = useMemo(() => new PlaneGeometry(130, 130), []);
-  const numberMat = useMemo(() => {
-    const m = paintColour("car26-number", "#ffffff", { roughness: 0.35, clearcoat: 0.6 }).clone();
-    m.map = numberTexture();
-    m.transparent = true;
-    m.alphaTest = 0.4;
-    return m;
-  }, []);
+  const led = useMemo(() => cached("car26-rw-leds", () => new BoxGeometry(12, 150, 12).translate(-2412, Z(785), REAR_WING.half - 5)), []);
   return (
     <group>
-      <mesh geometry={geo} material={paintColour("car26-navy", NAVY, { roughness: 0.34 })} castShadow receiveShadow />
-      <mesh geometry={leds} material={glow("#ff2430", 3)} />
-      {/* The mirrored copy flips the plane back so the number still reads. */}
-      <mesh geometry={number} material={numberMat} position={[-2170, 770, REAR_WING.half + 0.8]} scale={[side, 1, 1]} />
+      <mesh geometry={geo} material={CAR_MAT.carbonSatin} castShadow receiveShadow />
+      <mesh geometry={led} material={glow("#ff2430", 3)} />
     </group>
   );
 }
 
 /**
  * Single central pylon (≤25 mm thick) from the crash structure to the
- * mainplane, wrapped round the exhaust; the small brace that replaced the
- * beam wing crosses it.
+ * mainplane, wrapped round the tailpipe; the small symmetric brace that
+ * replaced the beam wing crosses it.
  */
 export function RearPylon() {
   const geo = useMemo(
@@ -343,22 +338,24 @@ export function RearPylon() {
               [-2180, 610],
               [-2290, 420],
               [-2140, CRASH.top - 10],
-              [-2010, 520],
+              [-2010, 560],
             ],
             6,
           ),
           24,
           0,
         );
-        const brace = wingElement(THIN, fullSpan([{ z: 0, x: -2160, y: 560, chord: 100, angle: 0 }, { z: 187, x: -2160, y: 560, chord: 100, angle: 0 }]), 2);
-        return mergeAll([p, brace]);
+        // Collar round the tailpipe where the pylon wraps it.
+        const collar = new CylinderGeometry(TAILPIPE.bore / 2 + 14, TAILPIPE.bore / 2 + 14, 60, 32, 1, true).rotateZ(Math.PI / 2).translate(TAILPIPE.exitX + 40, TAILPIPE.y + 8, 0);
+        const brace = wingElement(THIN, fullSpan([{ z: 0, x: -2160, y: 600, chord: 100, angle: 0 }, { z: 187, x: -2160, y: 600, chord: 100, angle: 0 }]), 2);
+        return mergeAll([p, collar, brace]);
       }),
     [],
   );
   return <mesh geometry={geo} material={CAR_MAT.carbonSatin} castShadow receiveShadow />;
 }
 
-/** The rear wing's single actuator, in the pylon head, driving the flap. */
+/** The rear wing's single actuator, in a fairing at the pylon head, driving the flap. */
 export function RearActuator() {
   const geo = useMemo(
     () =>

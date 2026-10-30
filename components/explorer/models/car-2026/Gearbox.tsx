@@ -1,12 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
-import { BoxGeometry, CylinderGeometry, ExtrudeGeometry, Path, Shape, type BufferGeometry } from "three";
+import { BoxGeometry, CircleGeometry, CylinderGeometry, ExtrudeGeometry, Path, Shape, type BufferGeometry } from "three";
 import { CAR_MAT, glow } from "../../kit/carMaterials";
 import { cached, mergeAll, roundedBox } from "../../kit/geometry";
 import { loft, mirrorRing, mirrorZ } from "../../kit/loft";
 import { pipe, rod } from "../../kit/strut";
-import { CRASH, FINAL_DRIVE_Y, GEARBOX, WHEEL } from "./layout";
+import { CRASH, FINAL_DRIVE_Y, GEARBOX, PU, WHEEL } from "./layout";
 
 type Sec = { x: number; top: number; bottom: number; w: number };
 
@@ -25,14 +25,20 @@ function boxHalf(s: Sec): [number, number][] {
   ];
 }
 
+/**
+ * Casing sections: the bellhousing bolts to the back of the engine low down
+ * (crank 90 mm up); from 600 mm ahead of the rear axle the underside must
+ * stay above the rising diffuser ramp.
+ */
 const CASE: Sec[] = [
-  { x: GEARBOX.front, top: 382, bottom: 92, w: 176 },
-  { x: -1300, top: 392, bottom: 112, w: 152 },
-  { x: -1500, top: 400, bottom: 152, w: 122 },
-  { x: -1650, top: 408, bottom: 196, w: 146 },
-  { x: -1760, top: 410, bottom: 204, w: 146 },
-  { x: -1900, top: 414, bottom: 244, w: 106 },
-  { x: GEARBOX.rear, top: 418, bottom: 262, w: 96 },
+  { x: GEARBOX.front, top: 352, bottom: 72, w: 168 },
+  { x: -1150, top: 378, bottom: 132, w: 148 },
+  { x: -1350, top: 398, bottom: 234, w: 124 },
+  { x: -1550, top: 406, bottom: 252, w: 116 },
+  { x: -1650, top: 410, bottom: 264, w: 136 },
+  { x: -1760, top: 412, bottom: 276, w: 136 },
+  { x: -1900, top: 416, bottom: 298, w: 104 },
+  { x: GEARBOX.rear, top: 418, bottom: 310, w: 94 },
 ];
 
 /** Carbon-titanium gearbox casing; it also carries the rear suspension and the crash structure. */
@@ -46,7 +52,7 @@ export function GearboxCasing() {
     () =>
       cached("car26-hydraulics", () =>
         mergeAll([
-          roundedBox(150, 50, 110, 10).clone().translate(-1420, 430, 0),
+          roundedBox(150, 50, 110, 10).clone().translate(-1420, 428, 0),
           pipe(
             [
               [-1360, 440, 40],
@@ -102,27 +108,37 @@ function gear(r: number, width: number, teethMod = 2.6) {
   });
 }
 
-const INPUT_Y = 292;
-const OUTPUT_Y = 212;
-/** Eight forward ratios: pinion radius on the input shaft (the pair sums to the 80 mm centre distance). */
-const RATIOS = [24, 27, 30, 32.5, 35, 37, 39, 41];
+const INPUT_Y = 350;
+const OUTPUT_Y = 286;
+const CENTRES = INPUT_Y - OUTPUT_Y;
+/** Eight forward ratios: pinion radius on the input shaft (each pair spans the 64 mm centre distance). */
+const RATIOS = [18, 20.5, 23, 25, 27, 29, 30.5, 32];
 
-/** Eight pairs of steel gears on the input and output shafts. */
+/**
+ * Eight pairs of steel gears on the input and output shafts, fed by the
+ * clutch and a drop gear from the crankshaft line.
+ */
 export function GearCluster() {
   const parts = useMemo(
     () =>
       cached("car26-gears", () => {
         const gears: BufferGeometry[] = [];
         RATIOS.forEach((r1, k) => {
-          const x = -1330 - k * 40;
+          const x = -1200 - k * 40;
           gears.push(gear(r1, 14).clone().translate(x, INPUT_Y, 0));
-          gears.push(gear(80 - r1, 14).clone().translate(x, OUTPUT_Y, 0));
+          gears.push(gear(CENTRES - r1, 14).clone().translate(x, OUTPUT_Y, 0));
         });
         // Reverse idler.
-        gears.push(gear(20, 12).clone().translate(-1660, 262, 64));
-        const shafts = mergeAll([rod([-1180, INPUT_Y, 0], [-1660, INPUT_Y, 0], 30), rod([-1300, OUTPUT_Y, 0], [-1690, OUTPUT_Y, 0], 32)]);
+        gears.push(gear(16, 12).clone().translate(-1540, 318, 48));
+        // Drop gears lift the drive from the crankshaft line to the input shaft.
+        gears.push(gear(58, 16).clone().translate(-1120, PU.crankY + 18, 0), gear(56, 16).clone().translate(-1120, INPUT_Y - 6, 0));
+        const shafts = mergeAll([
+          rod([-1100, INPUT_Y, 0], [-1520, INPUT_Y, 0], 26),
+          rod([-1180, OUTPUT_Y, 0], [-1690, OUTPUT_Y, 0], 28),
+          rod([GEARBOX.front - 20, PU.crankY + 18, 0], [-1130, PU.crankY + 18, 0], 30),
+        ]);
         // Selector barrel above the shafts.
-        const barrel = new CylinderGeometry(22, 22, 300, 24).rotateZ(Math.PI / 2).translate(-1470, 352, -40);
+        const barrel = new CylinderGeometry(18, 18, 300, 24).rotateZ(Math.PI / 2).translate(-1350, 384, -34);
         return { gears: mergeAll(gears), shafts, barrel };
       }),
     [],
@@ -136,13 +152,33 @@ export function GearCluster() {
   );
 }
 
+/** Multi-plate carbon clutch in the bellhousing, opened by the steering-wheel paddles. */
+export function Clutch() {
+  const parts = useMemo(
+    () =>
+      cached("car26-clutch", () => {
+        const plates: BufferGeometry[] = [];
+        for (let i = 0; i < 6; i++) plates.push(new CylinderGeometry(56, 56, 4, 32).rotateZ(Math.PI / 2).translate(GEARBOX.front - 26 - i * 8, PU.crankY + 18, 0));
+        const basket = new CylinderGeometry(64, 64, 60, 32, 1, true).rotateZ(Math.PI / 2).translate(GEARBOX.front - 46, PU.crankY + 18, 0);
+        return { plates: mergeAll(plates), basket };
+      }),
+    [],
+  );
+  return (
+    <group>
+      <mesh geometry={parts.plates} material={CAR_MAT.brakeCarbon} castShadow />
+      <mesh geometry={parts.basket} material={CAR_MAT.titanium} castShadow />
+    </group>
+  );
+}
+
 /** Differential and crown wheel on the final-drive axis. */
 export function Differential() {
   const parts = useMemo(
     () =>
       cached("car26-diff", () => {
-        const housing = new CylinderGeometry(70, 70, 150, 32).rotateX(Math.PI / 2).translate(-1700, FINAL_DRIVE_Y, 0);
-        const crown = gear(92, 18, 3).clone().rotateY(Math.PI / 2).translate(-1700, FINAL_DRIVE_Y, 62);
+        const housing = new CylinderGeometry(50, 50, 150, 32).rotateX(Math.PI / 2).translate(-1700, FINAL_DRIVE_Y, 0);
+        const crown = gear(58, 16, 3).clone().rotateY(Math.PI / 2).translate(-1700, FINAL_DRIVE_Y, 56);
         const outputs = mergeAll([
           new CylinderGeometry(44, 44, 40, 24).rotateX(Math.PI / 2).translate(-1700, FINAL_DRIVE_Y, 96),
           new CylinderGeometry(44, 44, 40, 24).rotateX(Math.PI / 2).translate(-1700, FINAL_DRIVE_Y, -96),
@@ -183,9 +219,9 @@ export function Driveshafts() {
 }
 
 const CRASH_SECS: Sec[] = [
-  { x: CRASH.front + 20, top: CRASH.top - 2, bottom: 272, w: 96 },
-  { x: -2250, top: CRASH.top - 8, bottom: 290, w: 80 },
-  { x: CRASH.rear, top: CRASH.top - 18, bottom: 306, w: 62 },
+  { x: CRASH.front + 20, top: CRASH.top - 2, bottom: 304, w: 92 },
+  { x: -2250, top: CRASH.top - 8, bottom: 306, w: 78 },
+  { x: CRASH.rear, top: CRASH.top - 18, bottom: 310, w: 62 },
 ];
 
 /** Rear impact structure: a tapered carbon box that crushes to absorb a rear impact. */
@@ -197,8 +233,9 @@ export function RearImpact() {
   return (
     <group>
       <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />
-      {/* Jacking point. */}
-      <mesh geometry={cached("car26-jack", () => new BoxGeometry(40, 30, 80))} material={CAR_MAT.titanium} position={[CRASH.rear - 10, 360, 0]} />
+      {/* Jacking point, and the optional rear-facing camera (position 6) above the rain light. */}
+      <mesh geometry={cached("car26-jack", () => new BoxGeometry(40, 24, 80))} material={CAR_MAT.titanium} position={[CRASH.rear - 10, 312, 0]} />
+      <mesh geometry={cached("car26-cam6", () => new CircleGeometry(9, 20).rotateY(-Math.PI / 2))} material={CAR_MAT.lens} position={[CRASH.rear - 1.5, 384, 0]} />
     </group>
   );
 }
@@ -206,7 +243,7 @@ export function RearImpact() {
 /** Central LED rain light, 295–305 mm above the reference plane. */
 export function RainLight() {
   return (
-    <group position={[CRASH.rear - 22, 350, 0]}>
+    <group position={[CRASH.rear - 22, 345, 0]}>
       <mesh geometry={cached("car26-rainlight", () => roundedBox(14, 40, 92, 4))} material={CAR_MAT.composite} />
       <mesh geometry={cached("car26-rainlight-led", () => new BoxGeometry(2, 28, 80))} material={glow("#ff2430", 3.6)} position={[-7.5, 0, 0]} />
     </group>

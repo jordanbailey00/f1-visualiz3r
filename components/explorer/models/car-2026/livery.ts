@@ -1,43 +1,29 @@
-import { liveryMaterial } from "../../kit/carMaterials";
+import { bodyPaint as housePaint } from "../../kit/livery";
+import { COCKPIT } from "./layout";
+
+const f = (n: number) => n.toFixed(1);
 
 /**
- * Livery of the generic 2026 car: pearl white over bare carbon, split by a
- * cyan line that climbs from the nose to the cockpit and sweeps down the
- * sidepods; a navy spine runs over the nose and engine cover.
+ * Functional surface detail on the 2026 bodywork: bare carbon on the
+ * cockpit's inner walls (following the opening, which narrows by the
+ * steering wheel), and the apertures cut into the bodywork (C3.16): rows of
+ * cooling louvres on the sidepod tops, the slot along the engine cover spine
+ * and the hot-air exit at the tail, drawn as dark openings.
  */
-export function bodyPaint() {
-  return liveryMaterial({
-    key: "car2026-body",
-    base: "#eef1f4",
-    colors: { livCyan: "#1ec8f0", livNavy: "#0e1b36", livWhite: "#eef1f4" },
-    roughness: 0.3,
-    glsl: /* glsl */ `
-      float az = abs(p.z);
-      // Paint above the split line, bare carbon below.
-      float split = mix(238.0, 430.0, smoothstep(2720.0, 1350.0, p.x));
-      split = mix(split, 300.0, smoothstep(250.0, -1450.0, p.x));
-      split += 22.0 * sin(p.x * 0.0021);
-      float d = p.y - split;
-      carbon = 1.0 - edge(d);
-      // Cyan pinstripe riding the split.
-      float stripe = edge(d - 9.0) * (1.0 - edge(d - 33.0));
-      col = mix(col, livCyan, stripe);
-      // Navy spine over the nose, the airbox and down the engine cover.
-      float spineW = mix(46.0, 120.0, smoothstep(2700.0, 1700.0, p.x));
-      spineW = mix(spineW, 70.0, smoothstep(-200.0, -1700.0, p.x));
-      float topSide = edge(p.y - (split + 150.0));
-      float spine = (1.0 - edge(az - spineW)) * topSide;
-      col = mix(col, livNavy, spine);
-      // Thin cyan edge along the spine.
-      float spineEdge = (1.0 - edge(az - spineW - 10.0)) * edge(az - spineW - 2.0) * topSide;
-      col = mix(col, livCyan, spineEdge);
-      // Inside the cockpit: bare carbon.
-      if (p.x < 935.0 && p.x > 140.0 && az < 246.0 && p.y < 694.0) carbon = 1.0;
-    `,
-  });
-}
+const FEATURES = /* glsl */ `
+  float az = abs(p.z);
+  float cw = ${f(COCKPIT.halfWidth)} - 18.0 * smoothstep(500.0, ${f(COCKPIT.front)}, p.x);
+  if (p.x < ${f(COCKPIT.front + 26)} && p.x > ${f(COCKPIT.rear - 26)} && az < cw + 16.0 && p.y < 688.0) carbon = 1.0;
+  if (p.x < -430.0 && p.x > -830.0 && az > 312.0 && az < 440.0 && p.y > 400.0) {
+    float u = fract((p.x + 430.0) / 36.0);
+    float slot = edge(u - 0.58) * (1.0 - edge(u - 0.9));
+    col = mix(col, vec3(0.01), slot);
+  }
+  if (p.x < -1460.0 && p.x > -1790.0 && az < 10.0 && p.y > 480.0) col = vec3(0.01);
+  if (p.x < -2004.0) col = vec3(0.012);
+`;
 
-/** Accent colour pieces (wing endplate faces, nose tip details). */
-export const ACCENT = "#1ec8f0";
-export const NAVY = "#0e1b36";
-export const PEARL = "#eef1f4";
+/** The house livery applied to the 2026 car's bodywork. */
+export function bodyPaint() {
+  return housePaint("2026", null, FEATURES);
+}

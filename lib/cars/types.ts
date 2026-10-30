@@ -19,7 +19,8 @@ export type PartCategory =
   | "drivetrain"
   | "suspension"
   | "wheels"
-  | "cockpit";
+  | "cockpit"
+  | "electronics";
 
 export interface PartInfo {
   name: string;

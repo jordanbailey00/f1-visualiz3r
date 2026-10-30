@@ -2,20 +2,28 @@
 
 import { Mirrored, Part } from "../../Part";
 import { AirboxCooler, EngineCover, Radiators, Sidepods } from "./Bodywork";
-import { FuelCell, Halo, Headrest, Mirrors, Monocoque, NoseCone, RollStructure, Seat, SideImpact, SteeringWheel } from "./Chassis";
-import { Diffuser, FloorBoards, FloorBody, Plank } from "./Floor";
-import { Differential, Driveshafts, GearboxCasing, GearCluster, RainLight, RearImpact } from "./Gearbox";
-import { ControlElectronics, Engine, EnergyStore, Exhaust, HeatShield, MguK, Plenum, Turbocharger } from "./PowerUnit";
 import {
-  FrontInboard,
-  FrontPushrods,
-  FrontWishbones,
-  RearInboard,
-  RearPushrods,
-  RearWishbones,
-  ToeLinks,
-  TrackRods,
-} from "./Suspension";
+  AccidentRecorder,
+  Cameras,
+  CockpitLights,
+  Extinguisher,
+  FuelCell,
+  Halo,
+  Harness,
+  Headrest,
+  Mirrors,
+  Monocoque,
+  NoseCone,
+  Pedals,
+  RollStructure,
+  Seat,
+  SideImpact,
+  SteeringWheel,
+} from "./Chassis";
+import { Diffuser, FloorBoards, FloorBody, FloorFront, FloorStays, FloorWinglets, Plank } from "./Floor";
+import { Clutch, Differential, Driveshafts, GearboxCasing, GearCluster, RainLight, RearImpact } from "./Gearbox";
+import { ControlElectronics, Engine, EnergyStore, Exhaust, HeatShield, MguK, Plenum, StandardEcu, Turbocharger } from "./PowerUnit";
+import { FrontInboard, FrontPushrods, FrontWishbones, RearInboard, RearPushrods, RearWishbones, ToeLinks, TrackRods } from "./Suspension";
 import { BrakeDucts, Brakes, Rims, Tyres, Uprights } from "./Wheels";
 import {
   FrontActuator,
@@ -27,7 +35,15 @@ import {
   RearFlap,
   RearMainplane,
   RearPylon,
+  RearSeparators,
 } from "./Wings";
+
+type V3 = [number, number, number];
+type Range = [number, number];
+
+/** Explode moves shared by parts and the cameras mounted on them. */
+const NOSE_MOVE: { explode: V3; range: Range } = { explode: [450, 0, 0], range: [0.35, 0.7] };
+const AIRBOX_MOVE: { explode: V3; range: Range } = { explode: [0, 560, 0], range: [0.45, 0.8] };
 
 /**
  * Generic 2026-regulation car. Exploding the view lifts the car off its plank
@@ -43,13 +59,13 @@ export default function Car2026Model() {
         <Part id="monocoque" cover>
           <Monocoque />
         </Part>
-        <Part id="nose" explode={[450, 0, 0]} explodeRange={[0.35, 0.7]}>
+        <Part id="nose" explode={NOSE_MOVE.explode} explodeRange={NOSE_MOVE.range}>
           <NoseCone />
         </Part>
         <Part id="halo" explode={[0, 330, 0]} explodeRange={[0.4, 0.75]}>
           <Halo />
         </Part>
-        <Part id="roll-structure" explode={[0, 560, 0]} explodeRange={[0.45, 0.8]}>
+        <Part id="roll-structure" explode={AIRBOX_MOVE.explode} explodeRange={AIRBOX_MOVE.range}>
           <RollStructure />
         </Part>
         <Part id="fuel-cell" explode={[0, 380, 0]} explodeRange={[0.55, 0.9]}>
@@ -59,11 +75,23 @@ export default function Car2026Model() {
           <Part id="seat" explode={[150, 300, 0]} explodeRange={[0.55, 0.9]}>
             <Seat />
           </Part>
+          <Part id="harness" explode={[150, 420, 0]} explodeRange={[0.6, 0.95]}>
+            <Harness />
+          </Part>
           <Part id="steering-wheel" explode={[320, 380, 0]} explodeRange={[0.5, 0.85]}>
             <SteeringWheel />
           </Part>
           <Part id="headrest" explode={[0, 250, 0]} explodeRange={[0.45, 0.8]}>
             <Headrest />
+          </Part>
+          <Part id="pedals" explode={[260, 0, 0]} explodeRange={[0.55, 0.9]}>
+            <Pedals />
+          </Part>
+          <Part id="extinguisher" explode={[0, -280, 0]} explodeRange={[0.55, 0.9]}>
+            <Extinguisher />
+          </Part>
+          <Part id="cockpit-lights" explode={[0, 160, 0]} explodeRange={[0.6, 0.95]}>
+            <CockpitLights />
           </Part>
         </Part>
         <Part id="mirrors" explode={[0, 140, 0]} explodeRange={[0.45, 0.8]}>
@@ -75,6 +103,9 @@ export default function Car2026Model() {
           <Mirrored out={280} explodeRange={[0.45, 0.85]}>
             <SideImpact />
           </Mirrored>
+        </Part>
+        <Part id="cameras">
+          <Cameras nose={NOSE_MOVE} airbox={AIRBOX_MOVE} />
         </Part>
       </Part>
 
@@ -127,6 +158,15 @@ export default function Car2026Model() {
         </Part>
       </Part>
 
+      <Part id="electronics">
+        <Part id="ecu" explode={[0, 700, -440]} explodeRange={[0.3, 0.75]}>
+          <StandardEcu />
+        </Part>
+        <Part id="adr" explode={[0, 300, 0]} explodeRange={[0.12, 0.6]}>
+          <AccidentRecorder />
+        </Part>
+      </Part>
+
       {/* --- Cooling ------------------------------------------------------ */}
       <Part id="cooling" explode={[0, 620, 0]} explodeRange={[0.12, 0.5]}>
         <Part id="radiators">
@@ -146,6 +186,9 @@ export default function Car2026Model() {
         </Part>
         <Part id="gear-cluster">
           <GearCluster />
+        </Part>
+        <Part id="clutch" explode={[160, 0, 0]} explodeRange={[0.65, 1]}>
+          <Clutch />
         </Part>
         <Part id="differential" explode={[-60, 0, 0]} explodeRange={[0.65, 1]}>
           <Differential />
@@ -171,6 +214,9 @@ export default function Car2026Model() {
         </Part>
         <Part id="rw-flap" explode={[0, 150, 0]} explodeRange={[0.55, 0.9]}>
           <RearFlap />
+        </Part>
+        <Part id="rw-separators" explode={[0, 75, 0]} explodeRange={[0.55, 0.9]}>
+          <RearSeparators />
         </Part>
         <Part id="rw-endplates" explode={[0, 40, 0]} explodeRange={[0.55, 0.9]}>
           <Mirrored out={180} explodeRange={[0.55, 0.9]}>
@@ -202,10 +248,21 @@ export default function Car2026Model() {
         <Part id="floor-body">
           <FloorBody />
         </Part>
+        <Part id="floor-front" explode={[220, 0, 0]} explodeRange={[0.45, 0.8]}>
+          <FloorFront />
+        </Part>
         <Part id="floor-boards" explode={[0, 80, 0]} explodeRange={[0.45, 0.8]}>
           <Mirrored out={230} explodeRange={[0.45, 0.8]}>
             <FloorBoards />
           </Mirrored>
+        </Part>
+        <Part id="floor-stays" explode={[0, 120, 0]} explodeRange={[0.5, 0.85]}>
+          <Mirrored out={120} explodeRange={[0.5, 0.85]}>
+            <FloorStays />
+          </Mirrored>
+        </Part>
+        <Part id="floor-winglets" explode={[-160, 0, 0]} explodeRange={[0.45, 0.8]}>
+          <FloorWinglets />
         </Part>
         <Part id="diffuser" explode={[-350, 0, 0]} explodeRange={[0.45, 0.8]}>
           <Diffuser />
@@ -302,4 +359,3 @@ export default function Car2026Model() {
     </group>
   );
 }
-

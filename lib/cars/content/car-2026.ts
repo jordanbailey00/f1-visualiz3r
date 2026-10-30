@@ -39,11 +39,14 @@ export const car2026: CarInfo = {
       details: [
         "Everything on the car is bolted to the survival cell. The front suspension, nose and steering are mounted on it, and the engine is bolted directly to its rear face as a stressed member. The gearbox and rear suspension hang off the back of the engine.",
         "It is also the driver's armour. Before a chassis can race it must pass the FIA's crash, squeeze and penetration tests, which were made tougher for 2026.",
+        "The rules fix where it sits. Its front face (the **XA** plane) must be 0–150 mm ahead of the front axle. The rear of the cockpit (**XC**) must be 1,830–2,030 mm behind that, and the engine mounting face at least 360 mm further back still, which leaves the room for the fuel cell.",
       ],
       specs: [
         ["Material", "Carbon-fibre composite with honeycomb core"],
         ["Contains", "Driver, fuel cell, battery"],
-        ["Homologation", "FIA crash and static load tests"],
+        ["Front axle", "0–150 mm behind the cell's front face"],
+        ["Cockpit rear", "1,830–2,030 mm behind the front face"],
+        ["Engine mounting", "Six M12 studs, ≥360 mm behind the cockpit"],
       ],
     },
     monocoque: {
@@ -73,6 +76,7 @@ export const car2026: CarInfo = {
       details: [
         "The nose is a hollow carbon cone designed to crush progressively, turning the car's energy into broken fibres instead of deceleration for the driver.",
         "New for 2026 is a **two-stage** structure. In earlier crashes the whole nose could snap off in the first hit, leaving nothing to absorb a second one. Now part of the structure must stay attached after the first impact, so it can still absorb energy if the car hits something again.",
+        "Its tip may carry a tiny cooling inlet. A pitot probe on top measures the true airspeed the aerodynamicists compare against their wind tunnel.",
       ],
       specs: [
         ["Test 1", ">17 m/s impact, at least 150 mm left uncrushed"],
@@ -104,7 +108,7 @@ export const car2026: CarInfo = {
       details: [
         "If the car turns over, this structure and the halo keep a survival space around the driver's head. It must reach at least **968 mm** above the reference plane.",
         "For 2026 the test load rose from 141 kN to **172 kN**, enough for a load of about 20 g instead of 16 g. This followed crashes in which roll hoops failed.",
-        "The opening at the front is the airbox. It feeds the turbocharger's compressor, and in many cars also an oil or ERS cooler packaged underneath. On top sits the **T-camera**, whose colour (yellow or black) tells viewers which of a team's two cars they are watching.",
+        "The opening at the front is the airbox. It feeds the turbocharger's compressor, and in many cars also an oil or ERS cooler packaged underneath. The T-camera and two side cameras are mounted on it (see **On-board cameras**).",
       ],
       specs: [
         ["Minimum height", "968 mm above the reference plane"],
@@ -131,12 +135,13 @@ export const car2026: CarInfo = {
       category: "cockpit",
       summary: "The driver's workspace: a moulded seat, the steering wheel and energy-absorbing padding.",
       details: [
-        "The driver lies back with their feet higher than their hips, so the car can be as low as possible. The cockpit opening must pass an FIA template so the driver can get out within seconds.",
+        "The driver lies back with their feet higher than their hips, so the car can be as low as possible. Strapped in and fully kitted, the driver must be able to remove the steering wheel and climb out within **7 seconds**, then refit the wheel within 12 seconds in total.",
         "The driver and seat ballast together must weigh at least **82 kg**. Lighter drivers carry ballast, so a small driver gains no advantage.",
       ],
       specs: [
         ["Driver + seat minimum", "82 kg"],
-        ["Exit", "Driver must get out in seconds, without help"],
+        ["Exit test", "Out in 7 s; wheel refitted within 12 s"],
+        ["Pedals", "No further forward than 315 mm behind XA"],
       ],
     },
     seat: {
@@ -155,10 +160,12 @@ export const car2026: CarInfo = {
       details: [
         "The wheel carries the shift paddles, the clutch paddles used at the start, the radio and drink buttons, and rotary switches for brake balance, differential and engine settings. In 2026 it also holds the controls for the new energy system, such as the **Boost** and **Overtake** buttons.",
         "The display shows gear, lap delta, battery charge and warnings. The rows of lights along the top tell the driver when to shift.",
+        "A quick-release hub, worked by pulling a collar on the column, lets the driver take the wheel off to get out. The wheel must sit at least 50 mm behind the front edge of the cockpit opening.",
       ],
       specs: [
         ["Controls", "Paddles, buttons and rotary switches"],
         ["Display", "Gear, deltas, energy state, flags"],
+        ["Clutch", "Up to two pull-type paddles"],
       ],
     },
     headrest: {
@@ -166,8 +173,12 @@ export const car2026: CarInfo = {
       category: "safety",
       summary: "Energy-absorbing foam around the driver's head and shoulders.",
       details: [
-        "The padding is made of a special foam that compresses slowly under impact, limiting how fast the driver's head can move in a crash.",
-        "The headrest is removable, so marshals can lift it out to reach the driver.",
+        "Three areas of padding, one behind and one each side of the driver's head, are made from a foam that compresses slowly under impact. This limits how fast the head can move in a crash.",
+        "They are designed to be the first thing the helmet touches. They lift out as one piece, so marshals can reach the driver.",
+      ],
+      specs: [
+        ["Rear pad", "260–380 mm wide, 75–90 mm thick"],
+        ["Removal", "All three areas as a single part"],
       ],
     },
     mirrors: {
@@ -175,8 +186,12 @@ export const car2026: CarInfo = {
       category: "cockpit",
       summary: "Rear-view mirrors on stalks at the sidepod shoulders, now with ERS status lights built in.",
       details: [
-        "The mirror housings must meet minimum sizes for the glass, so teams shape the housings and stalks to disturb the airflow as little as possible.",
-        "New for 2026, **ERS status lights** in the housings show marshals whether the car's high-voltage system is safe to touch after a crash.",
+        "Each glass must be exactly 200 × 50 mm and convex, and is canted 24–28° towards the car so the driver sees past the rear tyre. The body sits on an inner stay to the chassis and a slim rear stay (under 10 mm thick) to the sidepod.",
+        "New for 2026, a **lateral safety light** in each mirror body shows the state of the high-voltage system, so marshals know whether the car is safe to touch.",
+      ],
+      specs: [
+        ["Glass", "200 × 50 mm, convex"],
+        ["Safety light", "Built into each mirror body"],
       ],
     },
     "side-impact": {
@@ -186,6 +201,62 @@ export const car2026: CarInfo = {
       details: [
         "Two tubes on each side stick out from the survival cell inside the sidepods. In a T-bone crash they crush first, spreading the load and slowing the intrusion.",
         "Their position sets the shape of the sidepod inlets, which is why most cars' inlets sit just above or around them.",
+      ],
+    },
+    pedals: {
+      name: "Pedal box",
+      category: "cockpit",
+      summary: "Brake and throttle pedals in the footwell; F1 drivers brake with the left foot.",
+      details: [
+        "There is no clutch pedal: the clutch is worked by paddles on the steering wheel. The brake pedal drives two master cylinders, one per circuit. The throttle pedal only moves a sensor, and the FIA standard ECU turns that signal into torque from the engine and the MGU-K.",
+        "For safety the rules keep the pedals well back from the front of the chassis: no further forward than 315 mm behind the survival cell's front face.",
+      ],
+      specs: [
+        ["Pedals", "Brake (left foot) and throttle"],
+        ["Brake effort", "Over 100 kg of force at the pedal"],
+      ],
+    },
+    harness: {
+      name: "Safety harness",
+      category: "safety",
+      summary: "Six straps meeting at a single quick-release buckle hold the driver in the seat.",
+      details: [
+        "Two shoulder straps, two lap straps and two crotch straps lock the driver into the seat against braking loads of more than 5 g and the far higher loads of a crash. A twist of the central buckle releases all six at once.",
+      ],
+    },
+    extinguisher: {
+      name: "Fire extinguisher",
+      category: "safety",
+      summary: "An FIA-homologated extinguisher whose bottle sits inside the survival cell, with nozzles aimed into the cockpit.",
+      details: [
+        "The system discharges into the cockpit only, with at least one nozzle aimed at the driver's midriff. It has its own battery, so it still works if the car's electrics fail.",
+        "Both the driver and marshals can fire it: the external trigger is combined with the circuit-breaker switch on the outside of the car.",
+      ],
+      specs: [
+        ["Standard", "FIA 8876-2022"],
+        ["Bottle", "Inside the survival cell"],
+      ],
+    },
+    "cockpit-lights": {
+      name: "Cockpit & warning lights",
+      category: "safety",
+      summary: "Red, blue and yellow track-signal lights in front of the driver, and the impact warning light on top of the tub.",
+      details: [
+        "The FIA ECU drives three lights placed directly in the driver's line of sight. They repeat flags and track signals: yellow for danger, blue for a faster car behind, red for a stopped session.",
+        "Recessed into the top of the survival cell is the **impact warning light**, wired to the accident data recorder. After a crash it shows rescue crews at a glance how violent the impact was.",
+      ],
+    },
+    cameras: {
+      name: "On-board cameras",
+      category: "electronics",
+      summary: "The TV cameras every car must carry, in positions the FIA fixes.",
+      details: [
+        "Position 1 faces the driver from the top of the chassis. The nose carries position 2 pods: a working camera on the left, a matching dummy housing on the right. Two cameras sit on the sides of the airbox (position 3), with the **T-camera** on top of the roll hoop (position 4). The 360° camera sits on the forward chassis (position 5). The cameras in positions 4 and 5 are mandatory.",
+        "Housings used instead of cameras must match a real camera's size, shape and mass, so the choice never changes the car's balance. The T-camera's colour (black or fluorescent yellow) tells viewers which of a team's two cars they are watching.",
+      ],
+      specs: [
+        ["Positions", "Six, set by Article C8.16"],
+        ["Mandatory", "Cameras in positions 4 and 5"],
       ],
     },
 
@@ -212,6 +283,7 @@ export const car2026: CarInfo = {
       details: [
         "Running close to the ground, the mainplane benefits from **ground effect**: the air speeds up in the narrow gap under it, lowering the pressure and pulling the wing down harder than it would in free air.",
         "It never moves, so the front of the car keeps a baseline of grip even in Straight Mode.",
+        "Two pylons, each no more than 35 mm thick, carry the nose down onto it. Optional strakes underneath help steer the flow outward around the front tyres.",
       ],
     },
     "fw-flaps": {
@@ -244,7 +316,8 @@ export const car2026: CarInfo = {
       ],
       specs: [
         ["Endplate zone", "575–680 mm from the centreline, ≥10 mm thick"],
-        ["Footplate", "Reaches out to 900 mm"],
+        ["Footplates", "Inboard, and outboard out to 900 mm"],
+        ["Dive plane", "Optional, within 300 × 325 × 50 mm"],
       ],
     },
     "fw-actuator": {
@@ -285,7 +358,8 @@ export const car2026: CarInfo = {
         "Instead of a fuel mass flow, 2026 rules cap the **energy** in the fuel at 3,000 MJ per hour above 10,500 rpm. Since sustainable fuels vary in energy content, this keeps the limit fair. The compression ratio limit falls from 18:1 to **16:1**, checked both cold and at 130 °C after a 2026 loophole row.",
       ],
       specs: [
-        ["Layout", "90° V6, 80 mm bore"],
+        ["Layout", "90° V6, 80 mm bore, 101 mm bore spacing"],
+        ["Crankshaft", "On the centre line, 90 mm above the reference plane"],
         ["Displacement", "1,600 cc"],
         ["Fuel energy flow", "≤3,000 MJ/h (≈75 kg/h of fuel)"],
         ["Compression ratio", "≤16.0:1"],
@@ -325,9 +399,13 @@ export const car2026: CarInfo = {
       summary: "Inconel pipes that gather the six cylinders' exhaust into the turbine, then out of a single tailpipe.",
       details: [
         "The primaries are made of Inconel, a nickel superalloy that keeps its strength at around 900 °C. Their lengths are tuned so the pulses from each cylinder arrive at the turbine evenly. The heat turns the metal straw-gold and blue.",
-        "Exhaust leaves through one central tailpipe above the crash structure, with a wastegate pipe beside it. The wastegate vents excess gas around the turbine to control boost.",
+        "The wastegate vents excess gas around the turbine to control boost. In 2026 its pipe must rejoin the main exhaust, because only **one tailpipe** may leave the car. That tailpipe runs straight along the centre line for its last 370 mm and exits 390–400 mm behind the rear axle, above the crash structure.",
       ],
-      specs: [["Material", "Inconel nickel superalloy"]],
+      specs: [
+        ["Material", "Inconel nickel superalloy"],
+        ["Tailpipe", "One, 90–130 mm bore, exit 390–400 mm behind the rear axle"],
+        ["Exit height", "Above 350 mm from the reference plane"],
+      ],
     },
     "heat-shield": {
       name: "Heat shielding",
@@ -387,6 +465,32 @@ export const car2026: CarInfo = {
       details: [
         "The battery stores direct current, but the motor needs precisely timed alternating current. The control electronics switch hundreds of amps thousands of times a second to make the conversion.",
         "The FIA's standard ECU oversees the whole system, the same unit that commands the active wings and the gearbox.",
+      ],
+    },
+    electronics: {
+      name: "Control & data electronics",
+      category: "electronics",
+      summary: "The FIA Standard ECU that runs the car, and the accident data recorder.",
+      details: [
+        "Every team uses the same FIA-supplied ECU and software, so the governing body can see and police how the car is controlled. Data streams back to the pit wall by telemetry throughout each session.",
+      ],
+    },
+    ecu: {
+      name: "FIA Standard ECU",
+      category: "electronics",
+      summary: "The single control unit, identical for every team, that runs the power unit, gearbox, brakes and active wings.",
+      details: [
+        "The ECU decides how much torque the engine and MGU-K deliver for a given throttle position. It also runs the seamless gearshifts and the rear brake-by-wire. It is the only device allowed to move the wings into Straight Mode, and only inside an activation zone.",
+        "It also drives the cockpit signal lights and logs hundreds of sensor channels. The FIA checks its software, which is why driver aids like traction control can't be hidden in it.",
+      ],
+    },
+    adr: {
+      name: "Accident data recorder",
+      category: "electronics",
+      summary: "The FIA's black box, bolted to the floor of the survival cell, that records every impact.",
+      details: [
+        "Accelerometers near the car's centre of gravity record the forces of any crash. The FIA uses the data, with the high-speed camera aimed at the driver, to keep improving safety.",
+        "Four extra holes are allowed in the plank just to reach the bolts that secure it.",
       ],
     },
 
@@ -454,6 +558,15 @@ export const car2026: CarInfo = {
         ["Gear pairs", "Steel, ≥12 mm wide, ≥600 g"],
       ],
     },
+    clutch: {
+      name: "Clutch",
+      category: "drivetrain",
+      summary: "A small multi-plate carbon clutch in the bellhousing, used mainly for starts and pit stops.",
+      details: [
+        "Carbon plates barely larger than a hand handle hundreds of kilowatts. The driver works the clutch only with pull-type paddles on the steering wheel. Once moving, the seamless gearbox shifts without opening it.",
+        "In a crash or a spin the FIA-mandated clutch disengagement system opens the clutch automatically, so the engine does not stall.",
+      ],
+    },
     differential: {
       name: "Differential",
       category: "drivetrain",
@@ -477,7 +590,7 @@ export const car2026: CarInfo = {
       summary: "A tapered carbon box behind the gearbox that crushes to absorb a rear impact.",
       details: [
         "Like the nose, the structure is designed to crush progressively. It also carries the rain light and the jacking point.",
-        "It is tethered to the car so it cannot fly off after a crash.",
+        "It is tethered to the car so it cannot fly off after a crash. It may also carry the optional rear-facing camera (position 6).",
       ],
       specs: [
         ["Rear face", "750 mm behind the final-drive axis"],
@@ -532,12 +645,25 @@ export const car2026: CarInfo = {
         ["Failure mode", "Returns to Corner Mode"],
       ],
     },
+    "rw-separators": {
+      name: "Separators & rotation brackets",
+      category: "aero",
+      summary: "Small blocks that hold the flap's slot gap, and the brackets that carry its pivot.",
+      details: [
+        "Three to five pairs of separators must bridge the mainplane and the flap, so the 8–12 mm slot gap between them stays fixed under load. They also stop teams exploiting flex to cheat the gap.",
+        "Up to three rotation brackets carry the flap's pivot: one on the centre line, others outboard where they also hold the fixed flap tips.",
+      ],
+      specs: [
+        ["Separators", "3–5 pairs (mandatory)"],
+        ["Slot gap", "8–12 mm"],
+      ],
+    },
     "rw-endplates": {
       name: "Rear endplates & lights",
       category: "aero",
       summary: "Simplified endplates that carry the car number and two FIA LED lights.",
       details: [
-        "The endplates tidy the wing-tip vortices, which are a big source of drag, and carry the race number.",
+        "The endplates tidy the wing-tip vortices, which are a big source of drag. The 2026 design is deliberately simple, with no lower section.",
         "Built-in LED strips 700–870 mm up work with the central rain light to warn following cars.",
       ],
     },
@@ -608,8 +734,8 @@ export const car2026: CarInfo = {
       category: "aero",
       summary: "The main carbon floor plate, with fences under its leading edge and a curled outer edge.",
       details: [
-        "The fences under the front split the incoming air and set up vortices. These \"seal\" the floor edges so air from the side cannot leak in and spoil the low pressure underneath.",
-        "A mandatory winglet near each rear wheel helps manage the tyre's wake as it squashes and spins.",
+        "At the front the floor rises into two inlets. A single fence under each, within a 450 × 40 × 200 mm box, splits the incoming air and sets up a vortex. This \"seals\" the floor edge so air from the side cannot leak in and spoil the low pressure underneath.",
+        "The curled floor sidewall runs along the edges, and a **floor corner** vane in front of each rear tyre helps manage the tyre's wake as it squashes and spins.",
       ],
     },
     "floor-boards": {
@@ -623,6 +749,30 @@ export const car2026: CarInfo = {
       specs: [
         ["Zone", "650–1,350 mm behind the front axle, 710–890 mm out"],
         ["Sections", "Up to 3, plus up to 8 hangers"],
+      ],
+    },
+    "floor-front": {
+      name: "Floor bib & leading-edge device",
+      category: "aero",
+      summary: "The bib under the forward chassis and the slim vanes across the floor inlets.",
+      details: [
+        "The bib, a splitter-like plate under the forward chassis between the front wheels, is the first part of the floor to meet the air. Ahead of each inlet a **leading-edge device** of up to five slender sections starts conditioning the flow before it goes under the car.",
+      ],
+    },
+    "floor-stays": {
+      name: "Floor brace & stays",
+      category: "aero",
+      summary: "The tube and wires that stop the floor's edges and boards flexing at speed.",
+      details: [
+        "A single 40 mm floor board brace runs from the forward chassis to the boards. A floor foot stay and slender floor body stays (no more than 5 mm thick, and allowed to work only in tension) hold the floor edge. Without them the edges would bend under load and change the car's downforce, which the FIA's deflection tests check.",
+      ],
+    },
+    "floor-winglets": {
+      name: "Floor winglets",
+      category: "aero",
+      summary: "A mandatory small wing outboard of each diffuser wall, beside the rear wheels.",
+      details: [
+        "Its shape and position are tightly prescribed by the FIA. Teams may only tilt it ±5° about a set axis and move it ±10 mm, so it works much the same way on every car. It helps pull the rear tyres' wake away from the diffuser.",
       ],
     },
     diffuser: {
@@ -646,7 +796,8 @@ export const car2026: CarInfo = {
       specs: [
         ["Thickness", "10 ±0.2 mm new, ≥8 mm worn"],
         ["Width", "≤250 mm, narrowing to 150 front, 100 rear"],
-        ["Holes", "3 × 34 mm, metal skid at the front"],
+        ["Holes", "3 × 34 mm: 500 mm behind the front axle, under the cockpit, under the back of the engine"],
+        ["Skids", "Titanium or steel; mandatory at the front hole"],
       ],
     },
 

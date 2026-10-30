@@ -12,7 +12,6 @@ import {
   MeshPhysicalMaterial,
   Path,
   RepeatWrapping,
-  RingGeometry,
   Shape,
   SRGBColorSpace,
   Vector2,
@@ -24,7 +23,6 @@ import { cached, mergeAll, roundedBox } from "../../kit/geometry";
 import { loft, superRing } from "../../kit/loft";
 import { tyreGeometry, tyreMaterial } from "../../kit/tyre";
 import { BRAKES, FRONT_SUSP, REAR_SUSP, RIM, TYRES, WHEEL } from "./layout";
-import { ACCENT } from "./livery";
 
 type Axle = "front" | "rear";
 const COMPOUND = { name: "C4 SOFT", color: "#e8212b" };
@@ -158,7 +156,6 @@ export function Rims({ axle, out, range }: { axle: Axle; out: number; range: [nu
           <mesh geometry={rim} material={rimPaint} castShadow receiveShadow />
           <mesh geometry={sp} material={rimPaint} castShadow />
           <mesh geometry={cover} material={CAR_MAT.carbon} castShadow receiveShadow />
-          <mesh geometry={cached("car26-cover-ring", () => new RingGeometry(RIM.flange - 26, RIM.flange - 18, 96))} material={paintColour("car26-cyan", ACCENT, { roughness: 0.3 })} position={[0, 0, w / 2 - 1.4]} />
           <mesh geometry={nut} material={nutMat} castShadow />
         </>
       )}
@@ -167,7 +164,7 @@ export function Rims({ axle, out, range }: { axle: Axle; out: number; range: [nu
 }
 
 const rimPaint = paintColour("car26-rim", "#1a1c20", { roughness: 0.38, metalness: 0.7, clearcoat: 0.4 });
-const nutMat = paintColour("car26-nut", "#c8102e", { roughness: 0.3, metalness: 0.8, clearcoat: 0.6 });
+const nutMat = paintColour("car26-nut", "#4a4e55", { roughness: 0.32, metalness: 0.85, clearcoat: 0.4 });
 
 let ventTex: CanvasTexture | null = null;
 /** Rows of radial ventilation holes round the disc's edge (≈1,000+ on a front disc). */
@@ -288,7 +285,7 @@ export function BrakeDucts({ axle, out, range }: { axle: Axle; out: number; rang
     <Pair axle={axle} out={out} range={range}>
       {() => (
         <>
-          <mesh geometry={geo} material={CAR_MAT.carbonSatin} castShadow receiveShadow />
+          <mesh geometry={geo} material={CAR_MAT.carbonMatte} castShadow receiveShadow />
           <mesh geometry={mouth} material={ductMouth} />
         </>
       )}

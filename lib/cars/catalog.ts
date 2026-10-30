@@ -89,4 +89,5 @@ export const CATEGORY_META: Record<PartCategory, { label: string; color: string 
   suspension: { label: "Suspension", color: "#f472b6" },
   wheels: { label: "Wheels & brakes", color: "#a3e635" },
   cockpit: { label: "Cockpit", color: "#34d399" },
+  electronics: { label: "Electronics", color: "#e879f9" },
 };
