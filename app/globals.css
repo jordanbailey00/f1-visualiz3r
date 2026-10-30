@@ -1,0 +1,466 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+
+  --color-ink-950: #05070b;
+  --color-ink-900: #0a0d13;
+  --color-ink-850: #0e121a;
+  --color-ink-800: #131824;
+  --color-ink-700: #1c2333;
+  --color-ink-600: #2a3346;
+  --color-ink-500: #3b465d;
+  --color-ink-400: #5d6880;
+  --color-ink-300: #8a94aa;
+  --color-ink-200: #b7bfd0;
+  --color-ink-100: #dfe4ee;
+  --color-ink-50: #f3f5f9;
+
+  --color-hw: #38bdf8;
+  --color-hw-soft: #0c4a6e;
+  --color-llm: #a78bfa;
+  --color-llm-soft: #3b2a6b;
+  --color-warm: #fbbf24;
+  --color-pos: #f97316;
+  --color-neg: #3b82f6;
+
+
+  /* HUD: the instrument-panel language used by every overlay. */
+  --color-hud-text: #dfe5ec;
+  --color-hud-dim: #8d96a1;
+  --color-hud-faint: #59616c;
+  --color-hud-line: rgb(186 204 224 / 0.11);
+  --color-hud-line-strong: rgb(186 204 224 / 0.22);
+  --color-hud-bracket: rgb(214 226 240 / 0.62);
+  --color-hud-accent: #38bdf8;
+  --color-hud-accent-text: #bae6fd;
+  --color-hud-amber: #fbbf24;
+  --color-hud-void: #040507;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-ink-950);
+  color: var(--color-ink-100);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgb(56 189 248 / 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Presentation mode: press H (or open with ?clean) to hide all UI chrome. */
+html.ui-hidden .ui-chrome {
+  display: none !important;
+}
+
+/* ======================================================================
+   HUD — instrument-panel overlays
+   Square corners, hairlines, corner brackets, engraved mono labels and
+   indicator lamps. Everything is quiet until it is asked for.
+   ====================================================================== */
+
+@layer components {
+  .hud-panel {
+    position: relative;
+    background: rgb(6 8 11 / 0.82);
+    backdrop-filter: blur(12px) saturate(125%);
+    -webkit-backdrop-filter: blur(12px) saturate(125%);
+    border: 1px solid var(--color-hud-line);
+    border-radius: 1px;
+    box-shadow: 0 28px 70px -28px rgb(0 0 0 / 0.85);
+  }
+
+  /* Corner brackets drawn over the border of a panel or frame. */
+  .hud-panel::before,
+  .hud-frame::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: 1;
+    pointer-events: none;
+    --b: var(--color-hud-bracket);
+    --s: 9px;
+    background:
+      linear-gradient(var(--b), var(--b)) top left / var(--s) 1px no-repeat,
+      linear-gradient(var(--b), var(--b)) top left / 1px var(--s) no-repeat,
+      linear-gradient(var(--b), var(--b)) top right / var(--s) 1px no-repeat,
+      linear-gradient(var(--b), var(--b)) top right / 1px var(--s) no-repeat,
+      linear-gradient(var(--b), var(--b)) bottom left / var(--s) 1px no-repeat,
+      linear-gradient(var(--b), var(--b)) bottom left / 1px var(--s) no-repeat,
+      linear-gradient(var(--b), var(--b)) bottom right / var(--s) 1px no-repeat,
+      linear-gradient(var(--b), var(--b)) bottom right / 1px var(--s) no-repeat;
+  }
+  .hud-frame {
+    position: relative;
+  }
+
+  /* Engraved label: small mono capitals. */
+  .hud-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-hud-dim);
+  }
+
+  .hud-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 30px;
+    padding: 0 11px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-hud-text);
+    background: rgb(6 8 11 / 0.74);
+    border: 1px solid var(--color-hud-line-strong);
+    border-radius: 1px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition:
+      border-color 150ms ease,
+      background 150ms ease,
+      color 150ms ease,
+      box-shadow 150ms ease;
+  }
+  .hud-btn:hover {
+    border-color: rgb(214 226 240 / 0.45);
+    background: rgb(18 22 28 / 0.85);
+  }
+  .hud-btn:focus-visible,
+  .hud-x:focus-visible,
+  .hud-sel:focus-visible {
+    outline: 1px solid var(--color-hud-accent);
+    outline-offset: 2px;
+  }
+  .hud-btn[data-on="true"] {
+    color: var(--color-hud-accent-text);
+    border-color: rgb(56 189 248 / 0.55);
+    background: rgb(7 28 41 / 0.82);
+    box-shadow: inset 0 0 14px -6px rgb(56 189 248 / 0.7);
+  }
+  .hud-btn:disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .hud-btn-sq {
+    width: 30px;
+    padding: 0;
+  }
+
+  /* Small square close/dismiss control. */
+  .hud-x {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    flex: none;
+    color: var(--color-hud-faint);
+    border: 1px solid transparent;
+    transition:
+      color 120ms ease,
+      border-color 120ms ease;
+  }
+  .hud-x:hover {
+    color: var(--color-hud-text);
+    border-color: var(--color-hud-line-strong);
+  }
+
+  /* Indicator lamp. */
+  .hud-lamp {
+    width: 6px;
+    height: 6px;
+    flex: none;
+    border-radius: 999px;
+    background: #20262d;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.07);
+    transition:
+      background 200ms ease,
+      box-shadow 200ms ease;
+  }
+  .hud-lamp[data-on="true"] {
+    background: var(--color-hud-accent);
+    box-shadow:
+      0 0 0 1px rgb(56 189 248 / 0.35),
+      0 0 7px rgb(56 189 248 / 0.95),
+      0 0 18px rgb(56 189 248 / 0.45);
+  }
+  .hud-lamp[data-blink="true"] {
+    animation: hud-blink 2.2s ease-in-out infinite;
+  }
+
+  /* Ruler: baseline with minor and major ticks. */
+  .hud-rule {
+    height: 7px;
+    background:
+      linear-gradient(var(--color-hud-line-strong), var(--color-hud-line-strong)) left bottom / 100% 1px no-repeat,
+      repeating-linear-gradient(90deg, var(--color-hud-line-strong) 0 1px, transparent 1px 40px) left bottom / 100% 7px no-repeat,
+      repeating-linear-gradient(90deg, var(--color-hud-line) 0 1px, transparent 1px 8px) left bottom / 100% 4px no-repeat;
+  }
+
+  .hud-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(186 204 224 / 0.16) transparent;
+  }
+
+  /* Explanatory copy inside readouts. */
+  .hud-prose {
+    font-size: 13px;
+    line-height: 1.62;
+    color: #b3bcc7;
+  }
+  .hud-prose p + p {
+    margin-top: 0.65em;
+  }
+  .hud-prose strong {
+    color: var(--color-hud-text);
+    font-weight: 600;
+  }
+  .hud-prose code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    padding: 0 4px;
+    border: 1px solid var(--color-hud-line-strong);
+    color: var(--color-hud-text);
+  }
+
+  .hud-formula {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 8px 10px;
+    color: #d6ecfb;
+    background: rgb(0 0 0 / 0.35);
+    border: 1px solid var(--color-hud-line);
+    border-left: 2px solid rgb(56 189 248 / 0.6);
+  }
+
+  /* Key ........ value rows. */
+  .hud-kv {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 4px 0;
+  }
+  .hud-kv > dt {
+    display: flex;
+    flex: 1 0 auto;
+    align-items: baseline;
+    gap: 8px;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-hud-dim);
+  }
+  /* Dotted leader between key and value. */
+  .hud-kv > dt::after {
+    content: "";
+    flex: 1;
+    min-width: 10px;
+    border-bottom: 1px dotted rgb(186 204 224 / 0.22);
+    transform: translateY(-3px);
+  }
+  .hud-kv > dd {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 64%;
+    text-align: right;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--color-hud-text);
+  }
+
+  /* Rotary selector: positions on a ticked rail, the active one lit. */
+  .hud-selector {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    height: 36px;
+    padding: 0 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .hud-selector::after {
+    content: "";
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 6px;
+    height: 1px;
+    background: var(--color-hud-line);
+    pointer-events: none;
+  }
+  .hud-sel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 12px 3px;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-hud-faint);
+    transition: color 150ms ease;
+  }
+  .hud-sel:hover {
+    color: var(--color-hud-dim);
+  }
+  .hud-sel::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 6px;
+    width: 1px;
+    height: 4px;
+    background: var(--color-hud-line-strong);
+    transition: all 200ms ease;
+  }
+  .hud-sel[data-on="true"] {
+    color: var(--color-hud-text);
+  }
+  .hud-sel[data-on="true"]::after {
+    left: 12px;
+    width: calc(100% - 24px);
+    height: 2px;
+    background: var(--color-hud-accent);
+    box-shadow: 0 0 8px rgb(56 189 248 / 0.85);
+  }
+
+  /* Pointer tooltip. */
+  .hud-tip {
+    max-width: 270px;
+    padding: 7px 10px 8px;
+    background: rgb(6 8 11 / 0.97);
+    border: 1px solid var(--color-hud-line-strong);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Text field with an underline instead of a box. */
+  .hud-field {
+    width: 100%;
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    color: var(--color-hud-text);
+    caret-color: var(--color-hud-accent);
+  }
+  .hud-field:focus {
+    outline: none;
+  }
+  .hud-field::placeholder {
+    color: var(--color-hud-faint);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 10px;
+  }
+
+  .hud-reveal {
+    animation: hud-reveal 240ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+}
+
+/* Fader: a thin track with a rectangular cap, like a mixing desk. */
+input[type="range"].hud-fader {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 14px;
+  background: linear-gradient(
+      90deg,
+      var(--color-hud-accent) 0%,
+      var(--color-hud-accent) var(--slider-pct, 0%),
+      rgb(186 204 224 / 0.18) var(--slider-pct, 0%)
+    )
+    center / 100% 2px no-repeat;
+  cursor: pointer;
+  outline: none;
+}
+input[type="range"].hud-fader::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 6px;
+  height: 14px;
+  border-radius: 1px;
+  background: #e8eef5;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.6);
+}
+input[type="range"].hud-fader::-moz-range-thumb {
+  width: 6px;
+  height: 14px;
+  border: none;
+  border-radius: 1px;
+  background: #e8eef5;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.6);
+}
+
+@keyframes hud-reveal {
+  from {
+    opacity: 0.3;
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes hud-blink {
+  0%,
+  100% {
+    background: #20262d;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.07);
+  }
+  50% {
+    background: var(--color-hud-accent);
+    box-shadow:
+      0 0 0 1px rgb(56 189 248 / 0.35),
+      0 0 7px rgb(56 189 248 / 0.95),
+      0 0 18px rgb(56 189 248 / 0.45);
+  }
+}
+
+@keyframes hud-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes hud-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

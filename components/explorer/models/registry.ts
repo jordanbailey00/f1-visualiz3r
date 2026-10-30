@@ -1,0 +1,19 @@
+import { lazy, type ComponentType } from "react";
+import type { CarId } from "@/lib/cars/types";
+
+export interface ModelEntry {
+  Model: ComponentType;
+  /** Has moving parts that the animate toggle controls. */
+  animated: boolean;
+  /** Movable wing elements, and what their switch is called. */
+  aero?: { label: string; title: string };
+}
+
+/** Each car model is code-split and loaded only when its page opens. */
+export const CAR_MODELS: Partial<Record<CarId, ModelEntry>> = {
+  "2026": {
+    Model: lazy(() => import("./car-2026/Car2026Model")),
+    animated: false,
+    aero: { label: "Straight mode", title: "Open the front and rear wing flaps for the straights (A)" },
+  },
+};
