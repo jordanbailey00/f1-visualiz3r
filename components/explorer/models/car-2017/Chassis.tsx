@@ -255,7 +255,7 @@ export function RollStructure() {
       <mesh geometry={geo} material={bodyPaint()} castShadow receiveShadow />
       <mesh geometry={mouth} material={mouthDark} />
       {/* ERS status light behind the T-camera: green when the car is safe to touch (C5.13.3). */}
-      <mesh geometry={cached("car17-ers-light", () => new BoxGeometry(50, 10, 26))} material={glow("#38d46a", 1.8)} position={[XC - 200, 1004, 0]} />
+      <mesh geometry={cached("car17-ers-light", () => new BoxGeometry(50, 10, 26))} material={glow("#38d46a", 1.8)} position={[XC - 200, 984, 0]} />
     </group>
   );
 }
@@ -639,7 +639,7 @@ export function Cameras({ nose, airbox }: { nose: { explode: V3; range: [number,
       cached("car17-cameras", () => {
         const p2 = mergeAll([foilMember([2420, 474, 92], [2420, 474, 146], 46, 14), pod(2420, 474, 160)]);
         const p3 = mergeAll([pod(AIRBOX[2].x - 30, 912, 152, 110, 40, 30), mirrorZ(pod(AIRBOX[2].x - 30, 912, 152, 110, 40, 30))]);
-        const p4 = mergeAll([foilMember([XC - 40, 1008, 0], [XC - 40, 1046, 0], 120, 26), roundedBox(150, 26, 72, 10).clone().translate(XC - 46, 1056, 0)]);
+        const p4 = mergeAll([foilMember([XC - 40, 986, 0], [XC - 40, 1026, 0], 120, 26), roundedBox(150, 26, 72, 10).clone().translate(XC - 46, 1036, 0)]);
         const p1 = pod(COCKPIT.front + 12, tubTop(COCKPIT.front) + 22, 0, 46, 40, 30);
         const p5 = mergeAll([foilMember([1380, tubTop(1380) - 4, 0], [1380, tubTop(1380) + 40, 0], 70, 20), new SphereGeometry(26, 24, 16).translate(1380, tubTop(1380) + 58, 0)]);
         return { chassis: mergeAll([p1, p5]), nose: mergeAll([p2, mirrorZ(p2)]), airbox: mergeAll([p3, p4]) };

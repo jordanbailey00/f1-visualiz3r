@@ -43,7 +43,7 @@ export const CATALOG: CatalogEntry[] = [
     name: "Turbo-hybrid",
     shortName: "2014",
     tagline: "1.6-litre turbo V6 hybrids on narrow chassis.",
-    built: false,
+    built: true,
   },
   {
     id: "2017",
