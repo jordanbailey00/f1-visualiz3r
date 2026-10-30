@@ -5,7 +5,9 @@ in your browser. Rotate a car, pull it apart layer by layer, and click any part
 to learn what it does.
 
 Every car is procedural, real-time geometry built entirely in code: no
-downloaded meshes or photos.
+downloaded meshes or photos. Each one is built to its era's FIA technical
+regulations, and all of them wear the same plain livery so the eye goes to the
+engineering.
 
 | Era | Years | Theme | Status |
 | --- | --- | --- | --- |

@@ -493,6 +493,26 @@ export const car2026: CarInfo = {
         "Four extra holes are allowed in the plank just to reach the bolts that secure it.",
       ],
     },
+    transponders: {
+      name: "Timing transponders",
+      category: "electronics",
+      summary: "Two transponders, supplied by the official timekeepers, that time every lap to a thousandth of a second.",
+      details: [
+        "Each one signals to loops buried in the track at the finish line and the sector boundaries. Every car carries two, fitted exactly as the timekeepers specify, so a failure never loses a lap time.",
+      ],
+    },
+    ballast: {
+      name: "Ballast",
+      category: "chassis",
+      summary: "Dense tungsten plates bolted low in the car to bring it up to the minimum mass.",
+      details: [
+        "Teams build the car below the 724 kg-plus-tyres limit on purpose, then add ballast where it helps most: as low as possible, and placed to tune the front-to-rear weight split. It must be fixed so that tools are needed to remove it, and it can be sealed by the scrutineers.",
+      ],
+      specs: [
+        ["Minimum mass", "724 kg + tyres (726 kg + tyres in qualifying)"],
+        ["Weight split", "Front ≥44%, rear ≥54% of the minimum"],
+      ],
+    },
 
     // --- Cooling ------------------------------------------------------------
     cooling: {

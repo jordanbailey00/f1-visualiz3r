@@ -650,6 +650,24 @@ export function Cameras({ nose, airbox }: { nose: { explode: V3; range: [number,
   );
 }
 
+/** The two timing transponders (C8.15), low in the forward chassis. */
+export function Transponders() {
+  const geo = useMemo(
+    () => cached("car26-transponders", () => mergeAll([roundedBox(70, 26, 44, 6).clone().translate(1420, 214, 62), roundedBox(70, 26, 44, 6).clone().translate(1420, 214, -62)])),
+    [],
+  );
+  return <mesh geometry={geo} material={paintColour("transponder", "#1f3b63", { roughness: 0.5, clearcoat: 0.3 })} castShadow />;
+}
+
+/** Tungsten ballast plates bolted low in the survival cell floor to reach the minimum mass (C4.3). */
+export function Ballast() {
+  const geo = useMemo(
+    () => cached("car26-ballast", () => mergeAll([roundedBox(260, 14, 200, 3).clone().translate(620, 78, 0), roundedBox(180, 14, 160, 3).clone().translate(1060, 108, 0)])),
+    [],
+  );
+  return <mesh geometry={geo} material={paintColour("tungsten", "#6e7176", { roughness: 0.42, metalness: 0.9, clearcoat: 0 })} castShadow />;
+}
+
 /** Accident data recorder: bolted to the floor of the survival cell near the centre of gravity. */
 export function AccidentRecorder() {
   return (

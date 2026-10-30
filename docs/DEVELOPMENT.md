@@ -29,6 +29,35 @@ wheelbase is centred on x = 0 and the tyres stand on y = 0. Heights in the
 rules are measured from the reference plane (`CAR.refY`, the top of the plank).
 Use `Z(mm)` from the car's layout to convert.
 
+The FIA's own X axis runs rearward from datum planes, and each car's
+`layout.ts` exports those planes as car x positions:
+
+| Datum | Meaning |
+| --- | --- |
+| `XF`, `XR` | Front and rear axles |
+| `XA` | Forward limit of the survival cell |
+| `XC` | Rear of the cockpit |
+| `XPU` | ICE mounting face |
+| `XDIF` | Final-drive axis |
+
+A rule position "XA = d" is `XA - d`. Build from the datums and the
+regulation boxes rather than eyeballing.
+
+## House livery
+
+Every era uses the same livery (`kit/livery.ts`), so the eye goes to the parts:
+
+- One neutral satin paint on the bodywork shells (survival cell, nose, engine
+  cover, sidepods, halo fairing, mirror housings).
+- Bare carbon on wings, floor, suspension and structure, and natural metals
+  on the mechanical parts.
+- No stripes, accent colours or race numbers.
+
+Functional surface detail (cooling louvres, the cockpit's bare-carbon
+interior) goes in the era's `livery.ts` as GLSL in the paint's pattern
+function. The only colours on the car are functional: tyre compound bands,
+lights, and orange high-voltage cabling.
+
 ## Parts and motion
 
 - `<Part id explode explodeRange explodeRotate cover>`: a selectable,

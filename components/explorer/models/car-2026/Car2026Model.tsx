@@ -4,6 +4,7 @@ import { Mirrored, Part } from "../../Part";
 import { AirboxCooler, EngineCover, Radiators, Sidepods } from "./Bodywork";
 import {
   AccidentRecorder,
+  Ballast,
   Cameras,
   CockpitLights,
   Extinguisher,
@@ -19,6 +20,7 @@ import {
   Seat,
   SideImpact,
   SteeringWheel,
+  Transponders,
 } from "./Chassis";
 import { Diffuser, FloorBoards, FloorBody, FloorFront, FloorStays, FloorWinglets, Plank } from "./Floor";
 import { Clutch, Differential, Driveshafts, GearboxCasing, GearCluster, RainLight, RearImpact } from "./Gearbox";
@@ -164,6 +166,12 @@ export default function Car2026Model() {
         </Part>
         <Part id="adr" explode={[0, 300, 0]} explodeRange={[0.12, 0.6]}>
           <AccidentRecorder />
+        </Part>
+        <Part id="transponders" explode={[0, 300, 0]} explodeRange={[0.12, 0.6]}>
+          <Transponders />
+        </Part>
+        <Part id="ballast" explode={[0, 260, 0]} explodeRange={[0.12, 0.6]}>
+          <Ballast />
         </Part>
       </Part>
 

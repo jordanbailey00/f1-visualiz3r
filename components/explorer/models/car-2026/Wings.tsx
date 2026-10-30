@@ -130,17 +130,20 @@ export function FrontEndplates() {
     () =>
       cached("car26-fw-endplates", () => {
         const z = FW_EP_Z;
+        // Tall at the leading edge, the top sweeping down towards the trailing
+        // edge where the flaps meet it.
         const ep = plate(
           smoothOutline(
             [
               [2955, 126],
-              [2968, 230],
-              [2930, 345],
-              [2780, 404],
-              [2520, 414],
-              [2300, 402],
-              [2186, 376],
-              [2180, 250],
+              [2972, 250],
+              [2945, 372],
+              [2860, 414],
+              [2700, 404],
+              [2520, 360],
+              [2340, 318],
+              [2214, 300],
+              [2186, 250],
               [2200, 124],
               [2600, 118],
             ],
