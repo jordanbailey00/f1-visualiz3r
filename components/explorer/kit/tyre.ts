@@ -119,7 +119,7 @@ export function tyreMaterial(spec: TyreSpec, compound: { name: string; color: st
       ctx.font = `700 ${size * 0.8}px ${FONT_SANS}`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(`SLICK   ${compound.name}   18`, 0, 0);
+      ctx.fillText(`SLICK   ${compound.name}   ${Math.round((bead * 2) / 25.4)}`, 0, 0);
       ctx.restore();
       ctx.save();
       ctx.translate(W * (k / 2 + 0.06), yText);

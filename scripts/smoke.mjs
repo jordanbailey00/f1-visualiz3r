@@ -14,7 +14,7 @@ const base = i > 0 ? process.argv[i + 1] : process.env.SHOT_BASE ?? "http://loca
 const IGNORE = [/THREE\.Clock: This module has been deprecated/, /GPU stall due to ReadPixels/, /Download the React DevTools/];
 
 /** Eras whose models are built (see lib/cars/catalog.ts). */
-const CARS = ["2022", "2026"];
+const CARS = ["2017", "2022", "2026"];
 const ERAS = 7;
 
 const browser = await chromium.launch({ headless: true, args: ["--use-angle=vulkan", "--enable-features=Vulkan", "--ignore-gpu-blocklist"] });

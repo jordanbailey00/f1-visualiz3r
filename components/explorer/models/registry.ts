@@ -11,6 +11,11 @@ export interface ModelEntry {
 
 /** Each car model is code-split and loaded only when its page opens. */
 export const CAR_MODELS: Partial<Record<CarId, ModelEntry>> = {
+  "2017": {
+    Model: lazy(() => import("./car-2017/Car2017Model")),
+    animated: false,
+    aero: { label: "DRS", title: "Open the DRS flap on the rear wing (A)" },
+  },
   "2022": {
     Model: lazy(() => import("./car-2022/Car2022Model")),
     animated: false,

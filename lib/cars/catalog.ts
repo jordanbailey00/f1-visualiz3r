@@ -51,7 +51,7 @@ export const CATALOG: CatalogEntry[] = [
     name: "Wide hybrids",
     shortName: "2017",
     tagline: "Wider cars, fatter tyres and the halo.",
-    built: false,
+    built: true,
   },
   {
     id: "2022",
