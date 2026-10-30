@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { BoxGeometry, CylinderGeometry, Matrix4, Quaternion, TorusGeometry, Vector3, type BufferGeometry } from "three";
 import { CAR_MAT } from "../../kit/carMaterials";
 import { cached, mergeAll, roundedBox } from "../../kit/geometry";
-import { mirrorZ, type V3 } from "../../kit/loft";
+import { loft, type V3 } from "../../kit/loft";
 import { pipe, rod } from "../../kit/strut";
 import { ENGINE_MOUNTS, PU, TAILPIPE, XC, XPU } from "./layout";
 
@@ -337,14 +337,56 @@ export function StandardEcu() {
   );
 }
 
-/** Gold heat-reflective film over the hot engine bay and bellhousing. */
+/**
+ * The single oil tank (C5.22.3), low on the right of the block opposite the
+ * MGU-K: it must sit between the front axle and 150 mm behind the final
+ * drive, no wider than the survival cell (C7.1).
+ */
+export function OilTank() {
+  const parts = useMemo(
+    () =>
+      cached("car26-oil-tank", () => ({
+        tank: roundedBox(250, 150, 96, 28).clone().translate(PU.front - 160, PU.crankY + 14, 246),
+        fittings: mergeAll([
+          new CylinderGeometry(16, 16, 22, 16).translate(PU.front - 100, PU.crankY + 98, 246),
+          pipe(
+            [
+              [PU.front - 230, PU.crankY + 40, 200],
+              [PU.front - 300, PU.crankY + 10, 168],
+            ],
+            9,
+            20,
+          ),
+        ]),
+      })),
+    [],
+  );
+  return (
+    <group>
+      <mesh geometry={parts.tank} material={CAR_MAT.aluminiumCast} castShadow receiveShadow />
+      <mesh geometry={parts.fittings} material={CAR_MAT.braided} castShadow />
+    </group>
+  );
+}
+
+/** Gold heat-reflective film: a curved sheet arching over the turbo and bellhousing. */
 export function HeatShield() {
   const geo = useMemo(
     () =>
       cached("car26-heatshield", () => {
-        const g = new BoxGeometry(420, 1.2, 280).translate(PU.rear - 200, 392, 0);
-        const side = new BoxGeometry(300, 150, 1.2).translate(PU.rear - 60, 320, 214);
-        return mergeAll([g, side, mirrorZ(side)]);
+        const arc = (x: number, r: number): V3[] => {
+          const pts: V3[] = [];
+          for (let i = 0; i <= 12; i++) {
+            const a = Math.PI * 0.1 + (i / 12) * Math.PI * 0.8;
+            pts.push([x, TURBO[1] - 20 + Math.sin(a) * r, Math.cos(a) * r * 1.25]);
+          }
+          for (let i = 12; i >= 0; i--) {
+            const a = Math.PI * 0.1 + (i / 12) * Math.PI * 0.8;
+            pts.push([x, TURBO[1] - 20 + Math.sin(a) * (r - 1.5), Math.cos(a) * (r - 1.5) * 1.25]);
+          }
+          return pts;
+        };
+        return loft([arc(PU.rear + 20, 150), arc(TURBO[0], 160), arc(PU.rear - 300, 142)], { along: 4, around: 1, closed: true, capStart: true, capEnd: true });
       }),
     [],
   );

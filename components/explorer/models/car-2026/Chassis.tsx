@@ -545,6 +545,16 @@ export function CockpitLights() {
   );
 }
 
+/** The FIA high-speed camera at the front of the cockpit, aimed at the driver for accident analysis (C8.9.3). */
+export function HighSpeedCamera() {
+  return (
+    <group position={[COCKPIT.front - 26, 640, -150]} rotation={[0, 0, -0.35]}>
+      <mesh geometry={cached("car26-hs-camera", () => roundedBox(40, 34, 30, 6))} material={CAR_MAT.camera} castShadow />
+      <mesh geometry={cached("car26-hs-lens", () => new CircleGeometry(8, 16).rotateY(-Math.PI / 2))} material={CAR_MAT.lens} position={[-20.5, 0, 0]} />
+    </group>
+  );
+}
+
 /** Energy-absorbing foam pads round the cockpit opening (three areas, removable as one). */
 export function Headrest() {
   const geo = useMemo(

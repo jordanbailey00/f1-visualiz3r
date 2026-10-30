@@ -246,6 +246,14 @@ export const car2026: CarInfo = {
         "Recessed into the top of the survival cell is the **impact warning light**, wired to the accident data recorder. After a crash it shows rescue crews at a glance how violent the impact was.",
       ],
     },
+    "hs-camera": {
+      name: "FIA high-speed camera",
+      category: "electronics",
+      summary: "A small FIA camera at the front of the cockpit, filming the driver at high frame rates.",
+      details: [
+        "Together with the accident data recorder and the accelerometers in the driver's earpieces, it shows the FIA exactly how a driver's head and body move in a crash. That evidence shaped the halo, the headrest and today's seats.",
+      ],
+    },
     cameras: {
       name: "On-board cameras",
       category: "electronics",
@@ -405,6 +413,15 @@ export const car2026: CarInfo = {
         ["Material", "Inconel nickel superalloy"],
         ["Tailpipe", "One, 90–130 mm bore, exit 390–400 mm behind the rear axle"],
         ["Exit height", "Above 350 mm from the reference plane"],
+      ],
+    },
+    "oil-tank": {
+      name: "Oil tank",
+      category: "power",
+      summary: "The single tank for the dry-sump oil system, low beside the engine.",
+      details: [
+        "F1 engines use a **dry sump**: scavenge pumps suck the oil out of the crankcase and send it to a separate tank, then a pressure pump feeds it back. This lets the engine sit low and keeps oil supplied under any cornering load.",
+        "The rules allow only one oil tank, with a level sensor the FIA reads at all times. It must sit between the front axle and 150 mm behind the final drive, no wider than the survival cell. These rules stop oil being burnt as extra fuel or hidden in other tanks.",
       ],
     },
     "heat-shield": {

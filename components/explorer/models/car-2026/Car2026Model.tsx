@@ -12,6 +12,7 @@ import {
   Halo,
   Harness,
   Headrest,
+  HighSpeedCamera,
   Mirrors,
   Monocoque,
   NoseCone,
@@ -24,7 +25,7 @@ import {
 } from "./Chassis";
 import { Diffuser, FloorBoards, FloorBody, FloorFront, FloorStays, FloorWinglets, Plank } from "./Floor";
 import { Clutch, Differential, Driveshafts, GearboxCasing, GearCluster, RainLight, RearImpact } from "./Gearbox";
-import { ControlElectronics, Engine, EnergyStore, Exhaust, HeatShield, MguK, Plenum, StandardEcu, Turbocharger } from "./PowerUnit";
+import { ControlElectronics, Engine, EnergyStore, Exhaust, HeatShield, MguK, OilTank, Plenum, StandardEcu, Turbocharger } from "./PowerUnit";
 import { FrontInboard, FrontPushrods, FrontWishbones, RearInboard, RearPushrods, RearWishbones, ToeLinks, TrackRods } from "./Suspension";
 import { BrakeDucts, Brakes, Rims, Tyres, Uprights } from "./Wheels";
 import {
@@ -95,6 +96,9 @@ export default function Car2026Model() {
           <Part id="cockpit-lights" explode={[0, 160, 0]} explodeRange={[0.6, 0.95]}>
             <CockpitLights />
           </Part>
+          <Part id="hs-camera" explode={[0, 200, -60]} explodeRange={[0.6, 0.95]}>
+            <HighSpeedCamera />
+          </Part>
         </Part>
         <Part id="mirrors" explode={[0, 140, 0]} explodeRange={[0.45, 0.8]}>
           <Mirrored out={170} explodeRange={[0.45, 0.8]}>
@@ -142,6 +146,9 @@ export default function Car2026Model() {
         </Part>
         <Part id="exhaust">
           <Exhaust />
+        </Part>
+        <Part id="oil-tank" explode={[0, -120, 260]} explodeRange={[0.6, 0.95]}>
+          <OilTank />
         </Part>
         <Part id="heat-shield" explode={[-200, 420, 0]} explodeRange={[0.6, 0.95]}>
           <HeatShield />
