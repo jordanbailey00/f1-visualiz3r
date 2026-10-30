@@ -242,10 +242,10 @@ export function MguK() {
     () =>
       cached("car26-mguk", () => {
         const y = PU.crankY + 18;
-        const body = new CylinderGeometry(72, 72, 230, 40).rotateZ(Math.PI / 2).translate(PU.front - 150, y, -250);
+        const body = new CylinderGeometry(72, 72, 230, 40).rotateZ(Math.PI / 2).translate(PU.front - 150, y, -236);
         const fins: BufferGeometry[] = [];
-        for (let i = 0; i < 9; i++) fins.push(new CylinderGeometry(78, 78, 6, 40).rotateZ(Math.PI / 2).translate(PU.front - 60 - i * 22, y, -250));
-        const cap = new CylinderGeometry(58, 68, 30, 32).rotateZ(Math.PI / 2).translate(PU.front - 280, y, -250);
+        for (let i = 0; i < 9; i++) fins.push(new CylinderGeometry(78, 78, 6, 40).rotateZ(Math.PI / 2).translate(PU.front - 60 - i * 22, y, -236));
+        const cap = new CylinderGeometry(58, 68, 30, 32).rotateZ(Math.PI / 2).translate(PU.front - 280, y, -236);
         return { body: mergeAll([body, cap]), fins: mergeAll(fins) };
       }),
     [],
@@ -257,7 +257,7 @@ export function MguK() {
           [0, 26].map((dz) =>
             pipe(
               [
-                [PU.front - 100, PU.crankY + 80, -246 + dz],
+                [PU.front - 100, PU.crankY + 80, -232 + dz],
                 [PU.front + 40, PU.crankY + 40, -236 + dz],
                 [XPU + 140, 160, -170 + dz],
                 [XPU + 260, 150, -130 + dz],

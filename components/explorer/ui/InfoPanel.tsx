@@ -7,6 +7,7 @@ import { Rich } from "@/components/site/Rich";
 import { CATEGORY_META } from "@/lib/cars/catalog";
 import { ancestorsOf, useExplorer } from "@/lib/cars/store";
 import type { CarInfo } from "@/lib/cars/types";
+import { CAR_MODELS } from "../models/registry";
 
 type SectionKey = "detail" | "spec" | "process" | "note" | "contains";
 
@@ -199,12 +200,19 @@ const CONTROLS: [string, string][] = [
   ["Click", "Inspect a part"],
   ["Double-click / F", "Fly to it"],
   ["E", "Explode"],
-  ["A", "Active aero"],
   ["X", "X-ray"],
   ["L", "Labels"],
   ["R", "Reset view"],
   ["H", "Hide interface"],
 ];
+
+/** The control list, with the movable-wing key named the way this car's switch is. */
+function controlsFor(car: CarInfo): [string, string][] {
+  const aero = CAR_MODELS[car.id]?.aero;
+  if (!aero) return CONTROLS;
+  const i = CONTROLS.findIndex(([k]) => k === "E") + 1;
+  return [...CONTROLS.slice(0, i), ["A", aero.label], ...CONTROLS.slice(i)];
+}
 
 function CarBrief({ car, onClose }: { car: CarInfo; onClose: () => void }) {
   return (
@@ -237,7 +245,7 @@ function CarBrief({ car, onClose }: { car: CarInfo; onClose: () => void }) {
         </dl>
         <p className="hud-label mt-4 py-1.5 text-hud-text">Controls</p>
         <dl>
-          {CONTROLS.map(([k, v]) => (
+          {controlsFor(car).map(([k, v]) => (
             <KV key={k} k={k} v={<span className="text-hud-dim">{v}</span>} />
           ))}
         </dl>

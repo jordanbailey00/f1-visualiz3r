@@ -158,8 +158,9 @@ export function Radiators() {
   const parts = useMemo(
     () =>
       cached("car26-radiators", () => {
-        const { body, tanks } = core(220, 290, 64);
-        const place = (g: BufferGeometry) => g.clone().rotateZ(0.62).rotateY(-0.12).translate(190, 350, 468);
+        // Inclined both ways so the core stays between the tub and the undercut.
+        const { body, tanks } = core(150, 230, 60);
+        const place = (g: BufferGeometry) => g.clone().rotateZ(0.75).rotateX(0.24).rotateY(0.12).translate(190, 446, 448);
         return { cores: place(body), tanks: place(tanks) };
       }),
     [],
@@ -170,18 +171,18 @@ export function Radiators() {
         mergeAll([
           pipe(
             [
-              [80, 222, 456],
-              [-150, 200, 400],
-              [XPU + 40, 210, 300],
+              [280, 330, 430],
+              [0, 300, 390],
+              [XPU + 40, 230, 300],
               [XPU - 40, 280, 250],
             ],
             16,
           ),
           pipe(
             [
-              [290, 506, 458],
-              [0, 540, 400],
-              [XPU + 60, 510, 290],
+              [90, 556, 470],
+              [-150, 540, 400],
+              [XPU + 60, 480, 290],
               [XPU - 40, 470, 236],
             ],
             16,

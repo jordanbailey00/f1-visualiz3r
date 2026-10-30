@@ -117,3 +117,46 @@ export function smoothOutline(pts: [number, number][], per = 6): [number, number
   }
   return out;
 }
+
+export interface PathStation {
+  /** Leading edge position. The element's span runs along the path through (y, z). */
+  x: number;
+  y: number;
+  z: number;
+  chord: number;
+  /** Trailing-edge-up angle (radians) in the section plane. */
+  angle: number;
+  thick?: number;
+}
+
+/**
+ * A wing element whose span follows a curve in the YZ plane, such as a rear
+ * wing whose tips roll down into its sides. Each section lies in the plane
+ * of the car's x axis and the path normal, so where the path turns
+ * downwards the aerofoil turns with it.
+ */
+export function wingAlongPath(profile: [number, number][], path: PathStation[], along = 6, caps = true): BufferGeometry {
+  const rings: V3[][] = path.map((st, i) => {
+    const prev = path[Math.max(0, i - 1)];
+    const next = path[Math.min(path.length - 1, i + 1)];
+    // Span tangent in YZ, and the section's "up" (normal) square to it.
+    let ty = next.y - prev.y;
+    let tz = next.z - prev.z;
+    const tl = Math.hypot(ty, tz) || 1;
+    ty /= tl;
+    tz /= tl;
+    // Normal: the tangent turned 90° towards +y for a span running along +z.
+    const ny = tz;
+    const nz = -ty;
+    const k = st.thick ?? 1;
+    const ca = Math.cos(st.angle);
+    const sa = Math.sin(st.angle);
+    return profile.map(([s, h]) => {
+      const hh = h * k;
+      const along = -s * ca + hh * sa;
+      const up = s * sa + hh * ca;
+      return [st.x + st.chord * along, st.y + st.chord * up * ny, st.z + st.chord * up * nz] as V3;
+    });
+  });
+  return loft(rings, { along, around: 1, closed: true, capStart: caps, capEnd: caps, uvScale: 100 });
+}

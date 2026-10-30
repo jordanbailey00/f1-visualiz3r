@@ -59,7 +59,7 @@ export const CATALOG: CatalogEntry[] = [
     name: "Ground effect",
     shortName: "2022",
     tagline: "Venturi tunnels under the floor and 18-inch wheels.",
-    built: false,
+    built: true,
   },
   {
     id: "2026",
