@@ -101,6 +101,9 @@ export default function CarExplorer({ car }: { car: CarInfo }) {
                 </span>
               ),
             )}
+            <Link href="/lineup" className="hud-sel" title="Every car side by side, to scale">
+              All
+            </Link>
           </nav>
         }
         caption={`Era ${pad(era)} · ${car.years} · ${car.name}`}

@@ -9,10 +9,15 @@ downloaded meshes or photos. Each one is built to its era's FIA technical
 regulations, and all of them wear the same plain livery so the eye goes to the
 engineering.
 
+The [lineup](https://f1-visualiz3r.vercel.app/lineup) puts every car side by
+side in one scene, drawn with an orthographic camera so that all of them are
+at exactly the same scale, with rear axles in line and their dimensions
+measured from the models themselves.
+
 | Era | Years | Theme | Status |
 | --- | --- | --- | --- |
 | 1998 | 1998–2005 | Narrow, grooved-tyre V10s | in build |
-| 2006 | 2006–2008 | V8s and peak aero clutter | in build |
+| 2006 | 2006–2008 | V8s and peak aero clutter | **built** |
 | 2009 | 2009–2013 | Slicks return, clean bodies, exhaust tricks | **built** |
 | 2014 | 2014–2016 | Turbo-hybrid, narrow cars | **built** |
 | 2017 | 2017–2021 | Wide hybrids | **built** |

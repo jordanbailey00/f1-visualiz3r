@@ -14,7 +14,7 @@ const base = i > 0 ? process.argv[i + 1] : process.env.SHOT_BASE ?? "http://loca
 const IGNORE = [/THREE\.Clock: This module has been deprecated/, /GPU stall due to ReadPixels/, /Download the React DevTools/];
 
 /** Eras whose models are built (see lib/cars/catalog.ts). */
-const CARS = ["2009", "2014", "2017", "2022", "2026"];
+const CARS = ["2006", "2009", "2014", "2017", "2022", "2026"];
 const ERAS = 7;
 
 const browser = await chromium.launch({ headless: true, args: ["--use-angle=vulkan", "--enable-features=Vulkan", "--ignore-gpu-blocklist"] });
@@ -138,6 +138,18 @@ for (const car of CARS) {
     }
   });
 }
+
+await check("/lineup", async (page, errors) => {
+  await page.waitForSelector('[data-ready="true"]', { timeout: 60000 }).catch(() => errors.push("the cars never finished loading"));
+  const labels = await page.locator('a[href^="/20"]').count();
+  if (labels !== CARS.length) errors.push(`${labels} car labels (expected ${CARS.length})`);
+  for (const view of ["Side", "Front", "3D", "Top"]) {
+    await page.getByRole("button", { name: view, exact: true }).click();
+    await page.waitForTimeout(500);
+    const on = await page.locator('nav[aria-label="View"] [data-on="true"]').innerText();
+    if (on.toLowerCase() !== view.toLowerCase()) errors.push(`${view}: ${on} is selected instead`);
+  }
+});
 
 await browser.close();
 console.log(failures ? `\n${failures} route(s) failed` : "\nall routes passed");

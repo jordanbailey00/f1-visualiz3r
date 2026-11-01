@@ -3,7 +3,7 @@
  *
  * World units are millimetres. Every car is built around the origin with +Y
  * up, resting on the ground at y = 0. +X points forward (the nose), +Z to the
- * driver's right; the wheelbase is centred on x = 0.
+ * driver's right; each car's layout records where its axles sit.
  */
 
 /** One car per regulation era, keyed by the era's first season. */

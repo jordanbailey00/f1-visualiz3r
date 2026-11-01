@@ -10,24 +10,26 @@ Next.js 16 (App Router, Turbopack), React 19, three.js via React Three Fiber,
 drei and `@react-three/postprocessing`, Zustand, Tailwind CSS 4.
 
 ```
-app/                       routes: /  and  /[era]  (only built eras are generated)
+app/                       routes: /,  /lineup  and  /[era]  (only built eras are generated)
 logo.txt                   the ASCII logo on the home page
 lib/cars/                  types, era catalog (+ part category colours), store, content/<era>.ts
 lib/three/                 canvas painter, camera fitting, view shift, hit filtering, HDR clamp
 components/explorer/       canvas, explorer page, Part system, labels, UI panels
   kit/                     modelling kit (see below)
-  models/registry.ts       lazy import per era, plus whether it has movable wings
+  models/registry.ts       lazy import per era, its axle datums, whether it has movable wings
   models/car-<era>/        one folder per car
+components/lineup/         every built car in one scene, to scale
 components/hud, site/      HUD pieces, home page logo + star field
 scripts/                   screenshot.mjs, smoke.mjs
 ```
 
 ## Coordinates
 
-Millimetres. +X forward (the nose), +Y up, +Z to the driver's right. The
-wheelbase is centred on x = 0 and the tyres stand on y = 0. Heights in the
-rules are measured from the reference plane (`CAR.refY`, the top of the plank).
-Use `Z(mm)` from the car's layout to convert.
+Millimetres. +X forward (the nose), +Y up, +Z to the driver's right, with the
+tyres on y = 0. Where x = 0 falls varies by era, so each car's layout records
+its axles in `CAR.frontAxle` and `CAR.rearAxle`. Heights in the rules are
+measured from the reference plane (`CAR.refY`, the top of the plank). Use
+`Z(mm)` from the car's layout to convert.
 
 The FIA's own X axis runs rearward from datum planes, and each car's
 `layout.ts` exports those planes as car x positions:
@@ -95,20 +97,36 @@ The dev server for checks runs on port 4181 (`.claude/launch.json`).
 ```bash
 npm run typecheck
 npm test                 # every <Part id> has an explanation, and vice versa
-npm run smoke            # home + every built era: explode, aero, select, X-ray, zoom
+npm run smoke            # home, every built era (explode, aero, select, X-ray, zoom), the lineup
 node scripts/screenshot.mjs /2026?clean .screenshots/car.png --wait 9000 \
   --eval "window.__explorer.getState().setExplode(1)" --then-wait 4000
 ```
 
 In development `window.__explorer` is the store and `window.__three` the R3F
-state (`__three.controls` is the CameraControls instance). The home page card
-images live in `public/previews/<era>.webp`.
+state (`__three.controls` is the CameraControls instance). Neither exists in a
+production build, so `npm run smoke` only runs against a dev server. The home
+page card images live in `public/previews/<era>.webp`.
+
+## Lineup
+
+`/lineup` draws every built car in one scene with an orthographic camera, so
+there is no perspective and all of them are at the same scale wherever they
+stand. `components/lineup/stage.ts` holds the views, where each car stands in
+them (rear axles in line, oldest first) and how the camera frames them;
+`?view=top|side|front|3d` opens a given view. Dimensions on the labels are
+measured from the meshes once each car has mounted: width ignores the wheel
+nuts, height ignores the cameras. Wheelbase comes from the layout.
+
+Rendering is on demand, and interior parts are hidden, as seven cars would
+otherwise be a lot of draw calls. Three.js pointer events are off: hover and
+click test each car's bounding box, not its meshes.
 
 ## Adding an era
 
 1. Add `lib/cars/content/<era>.ts` and register it in `lib/cars/content/index.ts`.
 2. Build `components/explorer/models/car-<era>/` with a default-export model and
-   add it to `models/registry.ts`. Set `aero` for eras with DRS (2011–2025),
-   labelled "DRS".
+   add it to `models/registry.ts` with its `CAR` datums. Set `aero` for eras
+   with DRS (2011–2025), labelled "DRS".
 3. Set `built: true` in `lib/cars/catalog.ts`, add the era to `CARS` in
    `scripts/smoke.mjs`, and save a preview at `public/previews/<era>.webp`.
+   The lineup picks the new car up from the catalog.

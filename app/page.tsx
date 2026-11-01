@@ -38,6 +38,10 @@ export default function Home() {
           ),
         )}
       </nav>
+
+      <Link href="/lineup" className="hud-btn mt-10">
+        All cars side by side, to scale
+      </Link>
     </main>
   );
 }
