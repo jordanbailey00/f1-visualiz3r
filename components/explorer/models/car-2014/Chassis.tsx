@@ -58,16 +58,17 @@ const cockpitW = (x: number) => COCKPIT.halfWidth - 18 * smooth(500, COCKPIT.fro
 function tubHalf(s: Station, depth: number): [number, number][] {
   const { top, bottom, w } = s;
   const h = top - bottom;
+  // Above Z = 600 the car must stay inside ±300 mm (3.8.1), so the tub's shoulders slope in below that.
+  const r = Math.min(w - 46, 288);
   const outer: [number, number][] = [
-    [top - 9, w - 46],
-    [top - 52, w - 5],
+    [top - 9, r],
+    [Math.min(top - 40, Z(596)), Math.min(w - 8, 298)],
     [bottom + h * 0.42, w],
     [bottom + 42, w - 16],
     [bottom + 5, w - 64],
     [bottom, (w - 64) * 0.45],
     [bottom, 0],
   ];
-  const r = w - 46;
   const closed: [number, number][] = [[top, 0], [top - 1, r * 0.22], [top - 2, r * 0.44], [top - 4, r * 0.66], [top - 6, r * 0.86]];
   if (depth <= 0) return [...closed, ...outer];
   const cw = cockpitW(s.x);
@@ -97,7 +98,7 @@ export function Monocoque() {
       }),
     [],
   );
-  // Six M12 studs on the rear bulkhead take the engine (C5.4.17).
+  // Six M12 studs on the rear bulkhead take the engine.
   const studs = useMemo(
     () =>
       cached("car14-tub-studs", () => {
@@ -143,7 +144,7 @@ export function NoseCone() {
       }),
     [],
   );
-  // The small cooling aperture at the tip (C3.16.1) and the pitot probe that measures airspeed.
+  // The small cooling aperture at the tip and the pitot probe that measures airspeed.
   const tip = useMemo(
     () =>
       cached("car14-nose-tip", () => {
@@ -202,7 +203,7 @@ export function RollStructure() {
     <group>
       <mesh geometry={geo} material={bodyPaint()} castShadow receiveShadow />
       <mesh geometry={mouth} material={mouthDark} />
-      {/* ERS status light behind the T-camera: green when the car is safe to touch (C5.13.3). */}
+      {/* ERS status light behind the T-camera: green when the car is safe to touch. */}
       <mesh geometry={cached("car14-ers-light", () => new BoxGeometry(50, 10, 26))} material={glow("#38d46a", 1.8)} position={[XC - 200, 984, 0]} />
     </group>
   );
@@ -310,7 +311,7 @@ function dashTexture() {
   return dashTex;
 }
 
-/** Steering wheel position: at least 50 mm behind the cockpit opening's front edge (C12.5.3). */
+/** Steering wheel position: at least 50 mm behind the cockpit opening's front edge. */
 const WHEEL_X = COCKPIT.front - 60;
 
 /** Carbon steering wheel with display, switches and shift paddles. */
@@ -389,7 +390,7 @@ export function SteeringWheel() {
   );
 }
 
-/** Brake and throttle pedals in the footwell, no further forward than 315 mm behind XA (C12.5.5). */
+/** Brake and throttle pedals in the footwell. */
 export function Pedals() {
   const parts = useMemo(
     () =>
@@ -423,7 +424,7 @@ export function Pedals() {
   );
 }
 
-/** Fire extinguisher bottle under the driver's knees, with nozzles into the cockpit (C14.1). */
+/** Fire extinguisher bottle under the driver's knees, with nozzles into the cockpit. */
 export function Extinguisher() {
   const parts = useMemo(
     () =>
@@ -470,8 +471,8 @@ const extinguisherRed = paintColour("extinguisher", "#8f1d1d", { roughness: 0.4,
 
 /**
  * Lights the FIA requires in and on the cockpit: the red, blue and yellow
- * track-signal lights in the driver's line of sight (C8.12), and the impact
- * warning light recessed into the top of the survival cell (C8.13).
+ * track-signal lights in the driver's line of sight, and the impact
+ * warning light recessed into the top of the survival cell.
  */
 export function CockpitLights() {
   const parts = useMemo(
@@ -496,7 +497,7 @@ export function CockpitLights() {
   );
 }
 
-/** The FIA high-speed camera at the front of the cockpit, aimed at the driver for accident analysis (C8.9.3). */
+/** The FIA high-speed camera at the front of the cockpit, aimed at the driver for accident analysis. */
 export function HighSpeedCamera() {
   return (
     <group position={[COCKPIT.front - 26, 640, -150]} rotation={[0, 0, -0.35]}>
@@ -576,7 +577,7 @@ function pod(x: number, y: number, z: number, len = 80, w = 36, h = 34) {
 }
 
 /**
- * On-board cameras in the FIA positions (C8.16): 1 facing the driver on top
+ * On-board cameras in the FIA positions: 1 facing the driver on top
  * of the tub; 2 on the nose sides (a camera on the left, a dummy housing on
  * the right); 3 on the airbox sides; 4 the T-camera on the roll hoop; 5 the
  * 360° camera on the forward chassis. Each moves with the part it sits on.
@@ -615,7 +616,7 @@ export function Cameras({ nose, airbox }: { nose: { explode: V3; range: [number,
   );
 }
 
-/** The two timing transponders (C8.15), low in the forward chassis. */
+/** The two timing transponders, low in the forward chassis. */
 export function Transponders() {
   const geo = useMemo(
     () => cached("car14-transponders", () => mergeAll([roundedBox(70, 26, 44, 6).clone().translate(1520, 214, 62), roundedBox(70, 26, 44, 6).clone().translate(1520, 214, -62)])),
@@ -624,7 +625,7 @@ export function Transponders() {
   return <mesh geometry={geo} material={paintColour("transponder", "#1f3b63", { roughness: 0.5, clearcoat: 0.3 })} castShadow />;
 }
 
-/** Tungsten ballast plates bolted low in the survival cell floor to reach the minimum mass (C4.3). */
+/** Tungsten ballast plates bolted low in the survival cell floor to reach the minimum mass. */
 export function Ballast() {
   const geo = useMemo(
     () => cached("car14-ballast", () => mergeAll([roundedBox(260, 14, 200, 3).clone().translate(700, 78, 0), roundedBox(180, 14, 160, 3).clone().translate(1150, 108, 0)])),

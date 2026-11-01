@@ -270,9 +270,12 @@ export function RearEndplates() {
         return plate(
           smoothOutline(
             [
-              [f, top + 4],
-              [r + 40, top + 4],
-              [r, top - 40],
+              [f, top - 60],
+              [f - 12, top - 14],
+              [f - 60, top - 2],
+              [r + 110, top - 2],
+              [r + 34, top - 8],
+              [r, top - 60],
               [r, b + 60],
               [r + 60, b],
               [f - 60, b],

@@ -59,7 +59,7 @@ export function Engine() {
     () =>
       cached("car14-ice-studs", () => {
         const out = [];
-        // Six mounting bosses for the M12 studs on the survival cell (C5.4.17).
+        // Six mounting bosses for the M12 studs on the survival cell.
         for (const [y, z] of ENGINE_MOUNTS) out.push(new CylinderGeometry(16, 16, 20, 16).rotateZ(Math.PI / 2).translate(PU.front - 30, y, z));
         // Ignition coil towers along each cam cover.
         for (const side of [1, -1]) for (const x of CYL_X) out.push(onBank(new CylinderGeometry(14, 14, 30, 14), 372, 0, side, x + side * 10));
@@ -384,9 +384,9 @@ export function StandardEcu() {
 }
 
 /**
- * The single oil tank (C5.22.3), low on the right of the block opposite the
+ * The single oil tank, low on the right of the block opposite the
  * MGU-K: it must sit between the front axle and 150 mm behind the final
- * drive, no wider than the survival cell (C7.1).
+ * drive, no wider than the survival cell.
  */
 export function OilTank() {
   const parts = useMemo(

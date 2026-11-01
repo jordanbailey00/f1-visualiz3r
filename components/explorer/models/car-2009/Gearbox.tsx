@@ -234,7 +234,7 @@ export function RearImpact() {
     <group>
       <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />
       {/* Jacking point, and the optional rear-facing camera (position 6) above the rain light. */}
-      <mesh geometry={cached("car09-jack", () => new BoxGeometry(40, 24, 80))} material={CAR_MAT.titanium} position={[CRASH.rear - 10, Z(250), 0]} />
+      <mesh geometry={cached("car09-jack", () => new BoxGeometry(40, 24, 80))} material={CAR_MAT.titanium} position={[CRASH.rear + 6, Z(250), 0]} />
       <mesh geometry={cached("car09-cam6", () => new CircleGeometry(9, 20).rotateY(-Math.PI / 2))} material={CAR_MAT.lens} position={[CRASH.rear - 1.5, 384, 0]} />
     </group>
   );
