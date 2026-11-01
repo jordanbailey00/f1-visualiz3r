@@ -129,7 +129,7 @@ export default function Car2009Model() {
         </Part>
       </Part>
 
-      {/* --- Power unit --------------------------------------------------- */}
+      {/* --- Engine ------------------------------------------------------- */}
       <Part id="power-unit" explode={[0, 900, 0]} explodeRange={[0.3, 0.7]}>
         <Part id="ice">
           <Engine />

@@ -263,7 +263,7 @@ export function Diffuser() {
 /** Floor stays: slim rods from the chassis that stop the floor edge flexing. */
 export function FloorStays() {
   const geo = useMemo(
-    () => cached("car09-floor-stays", () => mergeAll([rod([300, 440, 520], [300, floorTopAt(300), 670], 5), rod([-700, 380, 480], [-700, floorTopAt(-700), 660], 5)])),
+    () => cached("car09-floor-stays", () => mergeAll([rod([300, 290, 430], [300, floorTopAt(300), 670], 5), rod([-700, 240, 340], [-700, floorTopAt(-700), 660], 5)])),
     [],
   );
   return <mesh geometry={geo} material={CAR_MAT.anodisedDark} castShadow />;

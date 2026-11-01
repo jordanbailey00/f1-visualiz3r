@@ -259,7 +259,7 @@ export function RearFlap() {
 /**
  * Endplate (right side): a tall flat plate between ±355 and ±375 mm, from the
  * axle line to 600 mm behind it and from Z = 300 to the top of the wing; its
- * side area must exceed 330,000 mm² (3.10.7). Louvres near the top let the
+ * side area must exceed 330,000 mm² (3.10.8). Louvres near the top let the
  * high-pressure air bleed off and weaken the tip vortex.
  */
 export function RearEndplates() {
@@ -350,7 +350,7 @@ export function RearPylon() {
   return <mesh geometry={geo} material={CAR_MAT.carbonSatin} castShadow receiveShadow />;
 }
 
-/** The DRS actuator in the head of the pillar, on the centre line (from 2016 within ±25 mm). */
+/** The DRS actuator in the head of the pillar, on the centre line. */
 export function RearActuator() {
   const geo = useMemo(
     () =>

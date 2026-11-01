@@ -218,7 +218,7 @@ export function Driveshafts() {
   );
 }
 
-/** Tapering from the gearbox to a rear face centred 300 mm above the reference plane (3.6.5, 15.5.3). */
+/** Tapering from the gearbox to a rear face centred 300 mm above the reference plane (3.10.5, 15.5.3). */
 const CRASH_SECS: Sec[] = [
   { x: CRASH.front + 10, top: CRASH.top + 10, bottom: CRASH.bottom - 10, w: CRASH.half + 18 },
   { x: CRASH.rear, top: CRASH.top, bottom: CRASH.bottom, w: CRASH.half },

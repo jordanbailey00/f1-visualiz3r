@@ -15,7 +15,7 @@ import { bodyPaint } from "./livery";
 /**
  * Sidepod sections (right side): a high inlet just behind the clear gap
  * after the bargeboards, a deep undercut, and a top that stays below
- * Z = 600 outboard of ±350 mm (3.5.2) before tapering into the coke bottle.
+ * Z = 600 outboard of ±300 mm (3.8.1) before tapering into the coke bottle.
  * The bottoms sit on the stepped floor.
  */
 type Pod = { x: number; top: number; bot: number; zi: number; zo: number; ymax: number; yu: number; yd: number; zd: number; zb: number };
