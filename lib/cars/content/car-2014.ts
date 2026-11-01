@@ -494,7 +494,7 @@ export const car2014: CarInfo = {
       summary: "Radiators and coolers that reject the heat of the engine, the turbo air and the electrics.",
       details: [
         "Roughly as much energy leaves the power unit as heat as is delivered as power. Coolant, oil, compressed intake air and the ERS all need their own cooling, more than the V8s ever did.",
-        "Bigger radiators mean bigger sidepods and more drag, so teams trade cooling against speed. Many run extra cooling louvres at hot races.",
+        "Bigger radiators mean bigger sidepods and more drag, so teams trade cooling against speed. The rules allow no louvres ahead of the rear axle, so hot air leaves through the exit at the back of the bodywork, which teams open up at hot races.",
       ],
     },
     radiators: {
@@ -957,7 +957,7 @@ export const car2014: CarInfo = {
       category: "suspension",
       summary: "The hub carriers that join the wheel, brakes and suspension, and are turned by the steering.",
       details: [
-        "Machined from titanium or metal-matrix composites, the upright carries the wheel bearings and caliper, and is where all the wishbone, push-rod and track-rod loads meet. Its stiffness directly affects how precisely the tyre is held.",
+        "Machined from aluminium alloy, the only material these rules allow, the upright carries the wheel bearings and caliper, and is where all the wishbone, push-rod and track-rod loads meet. Its stiffness directly affects how precisely the tyre is held.",
       ],
     },
     "rear-uprights": {

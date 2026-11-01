@@ -1028,7 +1028,7 @@ export const car2022: CarInfo = {
       category: "suspension",
       summary: "The hub carriers that join the wheel, brakes and suspension, and are turned by the steering.",
       details: [
-        "Machined from titanium or metal-matrix composites, the upright carries the wheel bearings and caliper, and is where all the wishbone, push-rod and track-rod loads meet. Its stiffness directly affects how precisely the tyre is held.",
+        "Machined from aluminium alloy, the only material these rules allow, the upright carries the wheel bearings and caliper, and is where all the wishbone, push-rod and track-rod loads meet. Its stiffness directly affects how precisely the tyre is held.",
       ],
     },
     "rear-uprights": {

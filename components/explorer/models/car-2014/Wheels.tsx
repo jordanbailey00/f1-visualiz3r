@@ -26,7 +26,7 @@ import { fullSpan, naca, plate, wingElement } from "../../kit/wing";
 import { BRAKES, FRONT_SUSP, REAR_SUSP, RIM, TYRES, WHEEL } from "./layout";
 
 type Axle = "front" | "rear";
-const COMPOUND = { name: "C4 SOFT", color: "#e8212b" };
+const COMPOUND = { name: "SUPERSOFT", color: "#e8212b" };
 
 /**
  * Both corners of an axle; children are built for the right-hand corner
