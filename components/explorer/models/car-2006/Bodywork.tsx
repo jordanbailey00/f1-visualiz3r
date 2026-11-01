@@ -314,7 +314,7 @@ export function Radiators() {
       cached("car06-radiators", () => {
         // Inclined both ways so the core stays between the tub and the undercut.
         const { body, tanks } = core(150, 260, 60);
-        const place = (g: BufferGeometry) => g.clone().rotateZ(0.75).rotateX(0.2).rotateY(0.1).translate(300, 480, 446);
+        const place = (g: BufferGeometry) => g.clone().rotateZ(0.75).rotateX(0.2).rotateY(0.1).translate(300, 456, 440);
         return { cores: place(body), tanks: place(tanks) };
       }),
     [],

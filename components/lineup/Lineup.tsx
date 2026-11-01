@@ -80,7 +80,8 @@ export default function Lineup() {
                 <span className={view === "side" ? "" : "max-sm:hidden"}>
                   <span className={`hud-label block text-[10.5px] ${tone}`}>
                     {entry.years}
-                    <span className="text-hud-faint"> · </span>
+                    {/* Seven cars abreast leave no room for one line. */}
+                    {view === "top" ? <br /> : <span className="text-hud-faint"> · </span>}
                     {entry.name}
                   </span>
                   {b && (
