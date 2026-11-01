@@ -32,10 +32,10 @@ export const CATALOG: CatalogEntry[] = [
   {
     id: "2009",
     years: "2009–2013",
-    name: "Slicks & exhaust tricks",
+    name: "Exhaust tricks",
     shortName: "2009",
     tagline: "Slick tyres return, bodywork goes clean, exhausts blow the diffuser.",
-    built: false,
+    built: true,
   },
   {
     id: "2014",
