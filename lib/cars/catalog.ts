@@ -27,7 +27,7 @@ export const CATALOG: CatalogEntry[] = [
     name: "V8 aero clutter",
     shortName: "2006",
     tagline: "2.4-litre V8s under a forest of winglets and flip-ups.",
-    built: false,
+    built: true,
   },
   {
     id: "2009",
