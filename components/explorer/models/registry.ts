@@ -1,5 +1,6 @@
 import { lazy, type ComponentType } from "react";
 import type { CarId } from "@/lib/cars/types";
+import { CAR as CAR_1998 } from "./car-1998/layout";
 import { CAR as CAR_2006 } from "./car-2006/layout";
 import { CAR as CAR_2009 } from "./car-2009/layout";
 import { CAR as CAR_2014 } from "./car-2014/layout";
@@ -19,6 +20,11 @@ export interface ModelEntry {
 
 /** Each car model is code-split and loaded only when its page opens. */
 export const CAR_MODELS: Partial<Record<CarId, ModelEntry>> = {
+  "1998": {
+    Model: lazy(() => import("./car-1998/Car1998Model")),
+    animated: false,
+    car: CAR_1998,
+  },
   "2006": {
     Model: lazy(() => import("./car-2006/Car2006Model")),
     animated: false,

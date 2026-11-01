@@ -19,7 +19,7 @@ export const CATALOG: CatalogEntry[] = [
     name: "Grooved-tyre V10",
     shortName: "1998",
     tagline: "Narrow cars, grooved tyres and 19,000 rpm V10s.",
-    built: false,
+    built: true,
   },
   {
     id: "2006",

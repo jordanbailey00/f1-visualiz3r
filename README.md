@@ -14,15 +14,15 @@ side in one scene, drawn with an orthographic camera so that all of them are
 at exactly the same scale, with rear axles in line and their dimensions
 measured from the models themselves.
 
-| Era | Years | Theme | Status |
-| --- | --- | --- | --- |
-| 1998 | 1998–2005 | Narrow, grooved-tyre V10s | in build |
-| 2006 | 2006–2008 | V8s and peak aero clutter | **built** |
-| 2009 | 2009–2013 | Slicks return, clean bodies, exhaust tricks | **built** |
-| 2014 | 2014–2016 | Turbo-hybrid, narrow cars | **built** |
-| 2017 | 2017–2021 | Wide hybrids | **built** |
-| 2022 | 2022–2025 | Ground-effect cars | **built** |
-| 2026 | 2026– | Active aero, new hybrid formula | **built** |
+| Era | Years | Theme |
+| --- | --- | --- |
+| 1998 | 1998–2005 | Narrow, grooved-tyre V10s |
+| 2006 | 2006–2008 | V8s and peak aero clutter |
+| 2009 | 2009–2013 | Slicks return, clean bodies, exhaust tricks |
+| 2014 | 2014–2016 | Turbo-hybrid, narrow cars |
+| 2017 | 2017–2021 | Wide hybrids |
+| 2022 | 2022–2025 | Ground-effect cars |
+| 2026 | 2026– | Active aero, new hybrid formula |
 
 ## Running it
 
