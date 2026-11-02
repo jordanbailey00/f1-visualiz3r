@@ -14,16 +14,16 @@ export const car1998: CarInfo = {
   model: "Generic 1998–2005-regulation car, to the 2005 rules (not any one team's design)",
   tagline: "Narrow cars, grooved tyres and 19,000 rpm V10s.",
   intro: [
-    "For 1998 the FIA slowed Formula 1 with two changes at once: the cars were narrowed from 2 metres to **1.8 metres**, and **grooves** were cut into the dry tyres to take rubber off the road. The cars that came out of those rules were narrow, tall-tailed and very quick.",
-    "This was the age of the **V10**. The rules asked for three litres and ten cylinders and little else, with no limit on revs, so engine makers chased ever higher revs and the cars screamed like nothing since. Electronics ran free too, and traction control became legal in 2001.",
-    "Each year the rules pulled back: wings higher, floors cut, parts made to last longer. For 2005, the last year modelled here, one engine had to last two race weekends and one set of tyres a whole race. Press **Explode** to take the car apart layer by layer, and click any part to learn what it does.",
+    "For 1998 the FIA slowed Formula 1 with two changes at once: the cars were narrowed from 2 metres to **1.8 metres**, and **grooves** were cut into the dry tyres to take rubber off the road.",
+    "This was the age of the **V10**. The rules ended up asking for three litres and ten cylinders and little else, with no limit on revs, and by 2005 the best engines ran at about 19,000 rpm. Electronics ran free too: traction control came back in 2001, because the FIA could no longer police its ban. Michael Schumacher and Ferrari took five titles in a row from 2000, and won 15 of the 18 races in 2004.",
+    "Each year the rules pulled back: wings higher, floors cut, parts made to last longer. For 2005, the year modelled here, one engine had to last two race weekends and one set of tyres a whole race. Press **Explode** to take the car apart layer by layer, and click any part to learn what it does.",
   ],
   specs: [
     ["Width", "1,800 mm including tyres"],
     ["Wheelbase", "No limit; about 3.1 m"],
     ["Minimum mass", "605 kg in qualifying, 600 kg otherwise, with driver"],
     ["Engine", "3.0 L V10, naturally aspirated"],
-    ["Rev limit", "None"],
+    ["Rev limit", "None; about 19,000 rpm in practice"],
     ["Fuel", "Refuelled in the race, ≤12.1 L/s"],
     ["Driver aids", "Traction control legal"],
     ["Tyres", "13-inch, four grooves"],
@@ -75,6 +75,7 @@ export const car1998: CarInfo = {
         ["Crash test", "780 kg at 14 m/s"],
         ["Reach", "≤1,200 mm ahead of the front axle, inside ±200 mm"],
       ],
+      didYouKnow: "Williams's 2004 FW26 had a short, stubby \"walrus\" nose joined to the front wing by sloping spars. It gave way to a conventional nose in time for that year's Hungarian Grand Prix.",
     },
     "roll-structure": {
       name: "Roll structure & airbox",
@@ -162,7 +163,7 @@ export const car1998: CarInfo = {
       summary: "Energy-absorbing foam around the driver's head, and along the cockpit rim.",
       details: [
         "Three areas of padding use a foam that compresses slowly under impact, which limits how fast the head can move in a crash. The pad behind the head must be 75–90 mm thick, and the side pads 95–105 mm. Further padding runs along the cockpit rim and around the driver's legs.",
-        "It lifts out as one piece, without tools, so marshals can reach the driver.",
+        "It lifts out as one piece, without tools, so marshals can reach the driver. From 2003 drivers also had to wear a HANS device, which ties the helmet to the shoulders.",
       ],
     },
     pedals: {
@@ -177,6 +178,7 @@ export const car1998: CarInfo = {
         ["Pedals", "Brake (left foot) and throttle"],
         ["Brake effort", "Over 100 kg of force at the pedal"],
       ],
+      didYouKnow: "McLaren's \"brake steer\" pedal, raced from the 1997 Canadian Grand Prix, braked one rear wheel on its own to help the car turn. It was ruled illegal at the 1998 Brazilian Grand Prix.",
     },
     extinguisher: {
       name: "Fire extinguisher",
@@ -230,6 +232,7 @@ export const car1998: CarInfo = {
       summary: "A 1,400 mm wing, held high at its ends and dipping low in the middle under the nose.",
       details: [
         "Outside ±250 mm of the centre line, everything ahead of the front wheels must stay 150–350 mm above the reference plane; in the middle, it may drop to 50 mm. So the wing arches down into a low spoon, the only part allowed near the ground.",
+        "That height is the result of two cuts: the wing was raised 50 mm for 2001 and another 50 mm for 2005, taking it further from the ground effect that made it work.",
         "At 1,400 mm wide, its tips sit in front of the tyres, not outside them, so it can't steer air around them the way later wings could.",
       ],
       specs: [
@@ -284,14 +287,17 @@ export const car1998: CarInfo = {
     "power-unit": {
       name: "Engine",
       category: "power",
-      summary: "A 3-litre V10 with no limit on revs: the sound and fury of the era, and its last great engine freedom.",
+      summary: "A 3-litre V10 with no limit on revs, the last engine of its kind in Formula 1.",
       details: [
-        "The rules asked for ten cylinders and three litres, and left the rest to the engine makers. Vee angle, bore, weight and revs were all free, so the race was to rev higher and build lighter.",
-        "By 2005 one engine had to last two race weekends, and an early change cost ten places on the grid, a first step towards cheaper, longer-lived engines. The V8s of 2006 ended the V10 era.",
+        "The rules ask for ten cylinders and three litres, and leave the rest to the engine makers. Vee angle, bore, weight and revs are all free, so the race was to rev higher and build lighter. BMW was first to 19,000 rpm, in 2002.",
+        "Engines had to last longer each year: one race weekend from 2004 and two from 2005, with ten places on the grid for an early change. The V8s of 2006 ended the V10 era.",
+        "Teams never published their figures. The usual estimates for 2005 are about 19,000 rpm and more than 900 hp.",
       ],
       specs: [
         ["Layout", "3.0 L V10"],
         ["Rev limit", "None"],
+        ["Revs", "About 19,000 rpm (estimate)"],
+        ["Power", "Over 900 hp (estimate)"],
         ["Induction", "Naturally aspirated"],
         ["Life", "Two events per engine (2005)"],
       ],
@@ -302,6 +308,7 @@ export const car1998: CarInfo = {
       summary: "Ten cylinders, three litres and no turbo: the last engines F1 ran with almost no limits on how they were built.",
       details: [
         "The rules ask for little: 3,000 cc, ten cylinders, no more than five valves per cylinder, no supercharging. There is no limit on revs, bore or vee angle, and no minimum weight, so engine makers chased ever higher revs and ever lighter parts.",
+        "Most ran a 90° vee, as this model does. Renault tried a very wide 111° in 2001, then moved to 72° in 2004.",
         "A few materials are fixed: the crankshaft and camshafts must be steel or cast iron, and pistons, heads and blocks may not be reinforced with carbon or aramid fibre.",
       ],
       specs: [
@@ -332,7 +339,7 @@ export const car1998: CarInfo = {
       summary: "Inconel pipes that rise through the bodywork as periscopes, blowing the hot gas up and over the rear of the car.",
       details: [
         "The primaries are made of Inconel, a nickel superalloy that keeps its strength at around 900 °C. Their lengths are tuned so the pressure pulses help empty each cylinder.",
-        "The rules forbid only variable-geometry exhausts, and leave the exits free. Ferrari's F300 brought them up through the top of the bodywork in 1998, and by 2005 that was the normal place for them: the gas stays clear of the floor, where its on-off flow would upset the car under braking and acceleration.",
+        "The rules forbid only variable-geometry exhausts, and leave the exits free. Ferrari's F300 brought them up through the top of the bodywork partway through 1998, and rivals soon copied it: the gas stays clear of the floor, where its on-off flow would upset the car under braking and acceleration.",
       ],
       specs: [
         ["Material", "Inconel nickel superalloy"],
@@ -368,8 +375,8 @@ export const car1998: CarInfo = {
       category: "electronics",
       summary: "The team's own control unit, which runs the engine, the gearshifts and the traction control.",
       details: [
-        "Each team and engine maker wrote its own software, so the electronics were a real area of competition. Every program had to be registered with the FIA, but the rules cannot look inside a car's code as it runs.",
-        "That is why traction control was legalised from the 2001 Spanish Grand Prix: the FIA could not be sure no one was using it, so it allowed everyone to.",
+        "Each team and engine maker wrote its own software, so the electronics were a real area of competition. Every program had to be registered with the FIA, but that could not show what the code really did.",
+        "That is why traction control was legalised from the 2001 Spanish Grand Prix: the FIA said it could no longer police the ban, so it allowed everyone to use it.",
         "One limit stayed: no system may detect the race start signal, so the driver still has to react to the lights.",
       ],
     },
@@ -398,6 +405,7 @@ export const car1998: CarInfo = {
         "The limit, including the driver, is 605 kg during qualifying and 600 kg at all other times.",
       ],
       specs: [["Minimum mass", "605 kg in qualifying, 600 kg otherwise"]],
+      didYouKnow: "After the 2005 San Marino Grand Prix, Jenson Button's BAR weighed 594.6 kg once drained of fuel, and the FIA's court found fuel in a special compartment of the tank had been used as ballast. BAR was excluded from the race and banned from the next two.",
     },
 
     // --- Cooling ------------------------------------------------------------
@@ -447,6 +455,7 @@ export const car1998: CarInfo = {
       summary: "Seven forward gears and a reverse, changed in milliseconds from paddles on the steering wheel.",
       details: [
         "The rules allow between four and seven forward gears, and the cars used all seven. The driver changes gear with paddles behind the steering wheel, and the clutch stays closed once the car is moving.",
+        "Fully automatic gearboxes came back along with traction control in 2001, and were banned again from 2004.",
       ],
       specs: [["Forward gears", "7, plus reverse"]],
     },
@@ -501,13 +510,14 @@ export const car1998: CarInfo = {
       summary: "A wide, low two-element wing with a beam wing below it, and nothing on it moves.",
       details: [
         "The rear wing makes downforce for the rear axle. Its upper profiles must fit within ±480 mm of the centre line, between 600 and 800 mm up, and no further than 350 mm behind the axle.",
-        "Below it, one more section may sit 300–375 mm up. Between the two, the rules keep the space clear.",
+        "The upper wing was cut to three elements for 2001 and two for 2004, and for 2005 it moved forward. Below it, one more section may sit 300–375 mm up.",
       ],
       specs: [
         ["Elements", "Mainplane + flap, plus beam wing"],
         ["Span", "≤1,000 mm with endplates"],
         ["Height", "600–800 mm above the reference plane"],
       ],
+      didYouKnow: "Juan Pablo Montoya's McLaren-Mercedes reached 372.6 km/h at Monza in 2005.",
     },
     "rw-mainplane": {
       name: "Rear mainplane",
@@ -580,7 +590,7 @@ export const car1998: CarInfo = {
       summary: "The tall, narrow cover over the V10, its spine following a diagonal line set by the rules.",
       details: [
         "From the side, the cover must fill an area that falls from 925 mm high, 1,000 mm ahead of the rear axle, to 550 mm at the axle. It must also be at least 150 mm wide at one end and 50 mm at the other, measured 200 mm below that line.",
-        "So the cover has a tall, slim spine, and below it narrows into the **coke bottle**. The periscope exhausts break through its shoulders.",
+        "The rule is an old one, tightened for 2004 after Ferrari cut its engine covers down. So the cover has a tall, slim spine, and below it narrows into the **coke bottle**. The periscope exhausts break through its shoulders.",
       ],
     },
     sidepods: {
@@ -597,7 +607,8 @@ export const car1998: CarInfo = {
       category: "aero",
       summary: "Hooded outlets on top of the sidepods that let hot air out.",
       details: [
-        "A chimney lets hot air out of the sidepod, feeding it into the fast flow over the top of the pod. The bigger the opening, the cooler the engine and the worse the drag, so teams fitted them to suit the heat of the track.",
+        "A chimney lets hot air out of the sidepod, feeding it into the fast flow over the top of the pod. The bigger the opening, the cooler the engine and the worse the drag, so teams set them to suit the heat of the track, and some ran them closed off.",
+        "They were a main cooling option in 2005, alongside louvres like the ones Renault cut into its engine cover.",
       ],
     },
     "flip-ups": {
@@ -605,16 +616,18 @@ export const car1998: CarInfo = {
       category: "aero",
       summary: "Small curved deflectors on the floor, just ahead of the rear tyres.",
       details: [
-        "For 2005 the floor had to be cut back ahead of the rear wheels, which took away downforce. Flick-ups sit in front of that notch, turning the air up and over the tyre to win some of it back.",
+        "For 2005 the bodywork had to be cut back in front of the rear wheels, which took downforce away from the floor. Flick-ups sit in front of that notch, turning the air up and around the tyre to win some of it back.",
+        "They were a busy area of development that year: BAR, Renault and Williams all brought new ones during the season.",
       ],
     },
-    "horn-wings": {
-      name: "Horn wings",
+    "shoulder-wings": {
+      name: "Shoulder wings",
       category: "aero",
       summary: "Winglets on the shoulders of the chassis, ahead of the cockpit.",
       details: [
         "In the clear space above the front wheels, small wings start working the air on its way to the sidepods. They must stay inside ±400 mm, clear of the front wheels, and under 600 mm high outside ±300 mm.",
       ],
+      didYouKnow: "In 1998 Tyrrell, Ferrari, Jordan, Prost and Sauber all ran tall X-wings, until they were banned after the San Marino Grand Prix.",
     },
 
     // --- Floor --------------------------------------------------------------
@@ -624,12 +637,13 @@ export const car1998: CarInfo = {
       summary: "A flat stepped floor with a short diffuser, its edges pinched in ahead of the rear wheels.",
       details: [
         "Seen from below, everything between 330 mm behind the front axle and 330 mm ahead of the rear axle must lie on one of two flat planes: the reference plane along the middle, where the plank is, or the **step plane** 50 mm above it.",
-        "It must keep inside ±400 mm until 800 mm behind the front axle, then may widen to ±700 mm, and for the last 400 mm before the rear axle comes back to ±500 mm. That notch ahead of the rear tyres took downforce away from the floor.",
+        "It must keep inside ±400 mm until 800 mm behind the front axle, then may widen to ±700 mm, and for the last 400 mm before the rear axle comes back to ±500 mm.",
       ],
       specs: [
         ["Width", "±700 mm at most"],
         ["Step", "50 mm"],
       ],
+      didYouKnow: "For 2005 the FIA raised the front wing, moved the rear wing forward, cut the floor ahead of the rear tyres and lowered the diffuser, aiming to remove 20% or more of the downforce. Adrian Newey put the real loss at up to 28%.",
     },
     "floor-body": {
       name: "Floor body & tea tray",
@@ -647,6 +661,7 @@ export const car1998: CarInfo = {
       details: [
         "The rules keep bodywork out of the zone around the front wheels only outside ±400 mm, so everything inside that line was free. These boards take the turbulent wake from the front tyres and steer it out past the sidepods, keeping the air reaching the floor clean.",
       ],
+      didYouKnow: "Both Ferraris were disqualified after the 1999 Malaysian Grand Prix for a bargeboard infringement, then reinstated on appeal.",
     },
     "turning-vanes": {
       name: "Turning vanes",
@@ -698,6 +713,7 @@ export const car1998: CarInfo = {
       summary: "Wishbones, push-rods and steering that hold the front wheels at precisely controlled angles.",
       details: [
         "Each wheel is located by six members: two wishbones (four legs), a push-rod, and a track rod for steering. The geometry must stay fixed, and nothing may be adjusted while the car is moving.",
+        "A high nose leaves the lower wishbones far from the tub, and teams answered that differently: in 2005 most ran a single keel under the chassis, Renault a V-keel, and McLaren no keel at all, as this model does.",
       ],
       didYouKnow: "Renault raced a tuned mass damper, a sprung weight that steadied the car over bumps, from the 2005 Brazilian Grand Prix.",
     },
@@ -756,7 +772,7 @@ export const car1998: CarInfo = {
       category: "suspension",
       summary: "Struts from the bottom of each upright up to rockers on top of the gearbox.",
       details: [
-        "When the wheel rises, the push-rod pushes a rocker on top of the casing, as at the front. This lets the springs and dampers live inside the bodywork, out of the airflow.",
+        "When the wheel rises, the push-rod pushes a rocker on top of the casing, as at the front. This lets the springs and dampers live inside the bodywork, out of the airflow. Ferrari, McLaren and BAR all used this layout in 2005.",
       ],
     },
     "toe-links": {
@@ -794,14 +810,16 @@ export const car1998: CarInfo = {
       category: "wheels",
       summary: "13-inch tyres with four grooves cut into the tread, to slow the cars down.",
       details: [
-        "Grooved dry tyres arrived in 1998: channels in the tread put less rubber on the road, cutting cornering grip. The fronts had three grooves that first year and four from 1999.",
-        "These were the years of a tyre war, and for 2005 the rules raised the stakes: one set had to last through qualifying and the whole race, with changes allowed only for a puncture or damage. Tyre changes came back for 2006.",
+        "Grooved dry tyres arrived in 1998: channels in the tread put less rubber on the road, cutting cornering grip. The fronts had three grooves that first year, and four from 1999.",
+        "Goodyear left after 1998, Bridgestone supplied everyone for two seasons, and Michelin returned in 2001 for a tyre war that ran to the end of this era.",
+        "For 2005 one set had to last through qualifying and the whole race, changed only for a puncture or wet weather. Tyre changes came back for 2006.",
       ],
       specs: [
         ["Grooves", "Four"],
         ["Width as fitted", "305–355 mm"],
         ["Diameter", "≤660 mm (wets ≤670 mm)"],
       ],
+      didYouKnow: "At the 2005 United States Grand Prix only six cars started, because Michelin judged its tyres unsafe for the banked turn at Indianapolis.",
     },
     "rear-tyres": {
       name: "Rear tyres",

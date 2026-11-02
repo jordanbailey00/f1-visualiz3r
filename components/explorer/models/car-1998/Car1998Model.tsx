@@ -1,7 +1,7 @@
 "use client";
 
 import { Mirrored, Part } from "../../Part";
-import { Chimneys, EngineCover, FlipUps, HornWings, Radiators, Sidepods } from "./Bodywork";
+import { Chimneys, EngineCover, FlipUps, Radiators, ShoulderWings, Sidepods } from "./Bodywork";
 import {
   AccidentRecorder,
   Ballast,
@@ -240,9 +240,9 @@ export default function Car1998Model() {
             <FlipUps />
           </Mirrored>
         </Part>
-        <Part id="horn-wings" explode={[0, -420, 0]} explodeRange={[0.4, 0.8]}>
+        <Part id="shoulder-wings" explode={[0, -420, 0]} explodeRange={[0.4, 0.8]}>
           <Mirrored out={420} explodeRange={[0.35, 0.75]}>
-            <HornWings />
+            <ShoulderWings />
           </Mirrored>
         </Part>
       </Part>

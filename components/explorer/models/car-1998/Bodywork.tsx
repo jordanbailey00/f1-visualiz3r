@@ -140,14 +140,14 @@ export function FlipUps() {
 }
 
 /**
- * Horn wing (right side): a winglet on the chassis shoulder ahead of the
+ * Shoulder wing (right side): a winglet on the chassis shoulder ahead of the
  * cockpit. It stays inside ±400 mm, clear of the front wheels (3.11), and
  * below Z = 600 outboard of ±300 mm (3.8.1).
  */
-export function HornWings() {
+export function ShoulderWings() {
   const geo = useMemo(
     () =>
-      cached("car98-horn-wing", () => {
+      cached("car98-shoulder-wing", () => {
         const st = (z: number): WingStation => ({ z, x: 1125, y: 596, chord: 122, angle: 0.2 });
         const wing = wingElement(FLAP, [st(200), st(300), st(386)], 3);
         const tip = plate(
