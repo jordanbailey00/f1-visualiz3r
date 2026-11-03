@@ -12,9 +12,10 @@ Williams colours, as each team raced in the season the car is built to:
 unofficial, colour-only versions without logos or sponsors.
 
 The [lineup](https://f1-visualiz3r.vercel.app/lineup) puts every car side by
-side in one scene, drawn with an orthographic camera so that all of them are
-at exactly the same scale, with rear axles in line and their dimensions
-measured from the models themselves. Pick a team there to see its colours
+side in one scene, with rear axles in line and their dimensions measured from
+the models themselves. The top, side and front views use an orthographic
+camera, so all of them are at exactly the same scale; the free 3D view is in
+perspective, so nearer cars look bigger, as they would in a photo. Pick a team there to see its colours
 change from era to era.
 
 | Era | Years | Theme |

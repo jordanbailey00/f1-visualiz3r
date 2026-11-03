@@ -120,7 +120,7 @@ export default function Lineup() {
             ))}
           </nav>
         }
-        caption="Every car to the same scale · lengths in mm"
+        caption={view === "3d" ? "Every car to scale, seen in perspective · lengths in mm" : "Every car to the same scale · lengths in mm"}
         right={<LiveryMenu eras={cars.map((c) => c.liveries ?? {})} onChoose={(l) => behindFade(() => useLivery.getState().setLivery(l))} />}
       />
 
@@ -130,20 +130,23 @@ export default function Lineup() {
         </p>
       )}
 
-      <div className="ui-chrome pointer-events-none absolute bottom-4 left-4 z-20">
-        <span
-          ref={(el) => {
-            scale.current.text = el;
-          }}
-          className="hud-label mb-1.5 block text-[9.5px] text-hud-dim"
-        />
-        <div
-          ref={(el) => {
-            scale.current.bar = el;
-          }}
-          className="h-1.5 border-x border-b border-hud-dim"
-        />
-      </div>
+      {/* In perspective the scale changes with distance, so the 3D view has no scale bar. */}
+      {view !== "3d" && (
+        <div className="ui-chrome pointer-events-none absolute bottom-4 left-4 z-20">
+          <span
+            ref={(el) => {
+              scale.current.text = el;
+            }}
+            className="hud-label mb-1.5 block text-[9.5px] text-hud-dim"
+          />
+          <div
+            ref={(el) => {
+              scale.current.bar = el;
+            }}
+            className="h-1.5 border-x border-b border-hud-dim"
+          />
+        </div>
+      )}
 
       <ControlHint
         className="bottom-4"

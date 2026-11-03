@@ -1,10 +1,13 @@
 import { Box3, Vector3 } from "three";
 
 /**
- * The lineup is one scene in true millimetres, drawn with an orthographic
- * camera: there is no perspective, so a car further away is not smaller, and
- * every car on screen is at exactly the same scale. Cars stand on a shared
- * datum, their rear axles in line.
+ * The lineup is one scene in true millimetres. Cars stand on a shared datum,
+ * their rear axles in line. The top, side and front views use an orthographic
+ * camera: there is no perspective, so every car on screen is at exactly the
+ * same scale and can be measured against the scale bar. The free 3D view is
+ * in perspective instead. Drawn without it, cars further away are not drawn
+ * any smaller, and the eye, expecting them to shrink, reads them as much
+ * bigger than they are.
  */
 export type LineupView = "top" | "side" | "front" | "3d";
 
@@ -81,6 +84,14 @@ export function labelAnchor(view: LineupView, at: V3, b: CarBounds, tail: number
   if (view === "front") return { point: [at[0] + 1000, at[1] + b.height + 110, at[2]], hang: "translate(-50%, -100%)" };
   if (view === "3d") return { point: [at[0] + b.max[0] + 170, 0, at[2]], hang: "translate(-50%, 0)" };
   return { point: [at[0] + b.min[0] - 150, 0, at[2]], hang: "translate(-50%, -100%)" };
+}
+
+/** Vertical field of view of the 3D view's perspective camera (degrees): a long lens, so the nearest cars do not loom. */
+export const FOV_3D = 24;
+
+/** Camera distance at which a perspective camera shows the target plane at `zoom` pixels per millimetre. */
+export function perspectiveDistance(zoom: number, height: number, fovDeg: number) {
+  return height / (2 * zoom * Math.tan((fovDeg * Math.PI) / 360));
 }
 
 const tmp = new Vector3();

@@ -1,16 +1,16 @@
 "use client";
 
-import { CameraControls, CameraControlsImpl } from "@react-three/drei";
+import { CameraControls, CameraControlsImpl, PerspectiveCamera } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState, type RefObject } from "react";
-import { Box3, BufferGeometry, Float32BufferAttribute, NeutralToneMapping, PCFShadowMap, Raycaster, Vector2, Vector3, type Group, type Mesh, type OrthographicCamera } from "three";
+import { Box3, BufferGeometry, CanvasTexture, Float32BufferAttribute, NeutralToneMapping, PCFShadowMap, Raycaster, Vector2, Vector3, type Group, type Mesh, type OrthographicCamera, type PerspectiveCamera as Perspective } from "three";
 import type { CatalogEntry } from "@/lib/cars/catalog";
 import type { ModelEntry } from "@/components/explorer/models/registry";
 import { LiveryDriver } from "@/components/explorer/LiveryDriver";
 import { SceneLights, StudioEnvironment } from "@/components/explorer/Studio";
 import "@/lib/three/hdrClamp";
-import { AXLE_X, FRONT_PITCH, FRONT_ROW, NARROW, PITCH, ROW, ROW_NARROW, VIEW_DIR, fitOrthographic, labelAnchor, slot, viewPadding, type CarBounds, type LineupView, type V3 } from "./stage";
+import { AXLE_X, FOV_3D, FRONT_PITCH, FRONT_ROW, NARROW, PITCH, ROW, ROW_NARROW, VIEW_DIR, fitOrthographic, labelAnchor, perspectiveDistance, slot, viewPadding, type CarBounds, type LineupView, type V3 } from "./stage";
 
 export type LineupCar = ModelEntry & { entry: CatalogEntry };
 
@@ -86,6 +86,8 @@ export default function LineupCanvas({
       <LiveryDriver cars={cars.map((c) => c.entry.id)} />
       <Cars cars={cars} view={view} onMeasured={onMeasured} />
       <Ground view={view} count={cars.length} />
+      {/* The free view is in perspective; the flat views keep the canvas's orthographic camera. */}
+      {view === "3d" && <PerspectiveCamera makeDefault fov={FOV_3D} near={100} far={400000} />}
       <Rig cars={cars} view={view} bounds={bounds} labels={labels} scale={scale} onHover={onHover} />
       <DevHook />
     </Canvas>
@@ -169,6 +171,23 @@ function lines(points: number[]) {
 }
 
 /** The floor and the one-metre grid the cars are measured against. */
+let groundTex: CanvasTexture | null = null;
+/** Full strength under the cars, fading out from 25 to 55 m away: no horizon edge in perspective. */
+function groundAlpha() {
+  if (groundTex) return groundTex;
+  const c = document.createElement("canvas");
+  c.width = c.height = 256;
+  const ctx = c.getContext("2d")!;
+  const g = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+  g.addColorStop(0, "#fff");
+  g.addColorStop(25 / 60, "#fff");
+  g.addColorStop(55 / 60, "#000");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 256, 256);
+  groundTex = new CanvasTexture(c);
+  return groundTex;
+}
+
 function Ground({ view, count }: { view: LineupView; count: number }) {
   const row = useThree((s) => s.size.width) < NARROW ? ROW_NARROW : ROW;
   const span = (count / 2) * PITCH + 800;
@@ -207,7 +226,7 @@ function Ground({ view, count }: { view: LineupView; count: number }) {
       ) : (
         <mesh rotation-x={-Math.PI / 2} position-y={-1} receiveShadow>
           <planeGeometry args={[120000, 120000]} />
-          <meshStandardMaterial color="#141820" roughness={0.92} metalness={0} />
+          <meshStandardMaterial color="#141820" roughness={0.92} metalness={0} alphaMap={groundAlpha()} transparent depthWrite={false} />
         </mesh>
       )}
       <lineSegments geometry={grid}>
@@ -253,7 +272,7 @@ function Rig({
   onHover: (id: string | null) => void;
 }) {
   const controls = useRef<CameraControlsImpl>(null);
-  const camera = useThree((s) => s.camera) as OrthographicCamera;
+  const camera = useThree((s) => s.camera);
   const size = useThree((s) => s.size);
   const gl = useThree((s) => s.gl);
   const scene = useThree((s) => s.scene);
@@ -303,11 +322,15 @@ function Rig({
     const free = view === "3d";
     c.mouseButtons.left = free ? CameraControlsImpl.ACTION.ROTATE : CameraControlsImpl.ACTION.TRUCK;
     c.touches.one = free ? CameraControlsImpl.ACTION.TOUCH_ROTATE : CameraControlsImpl.ACTION.TOUCH_TRUCK;
-    c.setLookAt(target.x + dirVec.x * 60000, target.y + dirVec.y * 60000, target.z + dirVec.z * 60000, target.x, target.y, target.z, false);
-    c.zoomTo(zoom, false);
+    // In perspective the camera stands back far enough to show the lineup's middle at the
+    // same scale, plus a little: the near cars come out bigger than the middle.
+    const persp = (camera as Perspective).isPerspectiveCamera ? (camera as Perspective) : null;
+    const distance = persp ? perspectiveDistance(zoom, size.height, persp.fov) * 1.12 : 60000;
+    c.setLookAt(target.x + dirVec.x * distance, target.y + dirVec.y * distance, target.z + dirVec.z * distance, target.x, target.y, target.z, false);
+    c.zoomTo(persp ? 1 : zoom, false);
     c.update(0);
     invalidate();
-  }, [view, boxes, cars.length, size.width, size.height, narrow, invalidate]);
+  }, [view, boxes, cars.length, size.width, size.height, narrow, camera, invalidate]);
 
   // Clicking a car opens it; only the boxes are tested, never the meshes.
   useEffect(() => {
@@ -364,14 +387,30 @@ function Rig({
       const { point, hang } = labelAnchor(view, slot(view, i, cars.length, narrow), b, tail, narrow);
       screen.set(...point).project(camera);
       el.style.transform = `translate(${((screen.x + 1) / 2) * size.width}px, ${((1 - screen.y) / 2) * size.height}px) ${hang}`;
+      // In perspective a label can end up behind the camera.
+      el.style.opacity = Math.abs(screen.z) > 1 ? "0" : "";
     });
     const { bar, text } = scale.current;
-    if (bar && text) {
+    // A scale bar holds only where the scale is the same everywhere: not in perspective.
+    if (bar && text && (camera as OrthographicCamera).isOrthographicCamera) {
       const m = STEPS.find((s) => s * camera.zoom >= 70) ?? STEPS[STEPS.length - 1];
       bar.style.width = `${m * camera.zoom}px`;
       text.textContent = m >= 1000 ? `${m / 1000} m` : `${m} mm`;
     }
   });
 
-  return <CameraControls ref={controls} makeDefault minZoom={0.012} maxZoom={1.5} smoothTime={0.22} draggingSmoothTime={0.06} dollyToCursor maxPolarAngle={Math.PI / 2} />;
+  return (
+    <CameraControls
+      ref={controls}
+      makeDefault
+      minZoom={0.012}
+      maxZoom={1.5}
+      minDistance={2500}
+      maxDistance={250000}
+      smoothTime={0.22}
+      draggingSmoothTime={0.06}
+      dollyToCursor
+      maxPolarAngle={Math.PI / 2}
+    />
+  );
 }

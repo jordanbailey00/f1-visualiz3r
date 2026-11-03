@@ -139,9 +139,14 @@ page card images live in `public/previews/<era>.webp`.
 
 ## Lineup
 
-`/lineup` draws every built car in one scene with an orthographic camera, so
-there is no perspective and all of them are at the same scale wherever they
-stand. `components/lineup/stage.ts` holds the views, where each car stands in
+`/lineup` draws every built car in one scene. The top, side and front views
+use the canvas's orthographic camera, so there is no perspective and all of
+them are at the same scale wherever they stand, which is what the scale bar
+measures. The free 3D view switches to a perspective camera (`FOV_3D`) and
+drops the scale bar. Without perspective, a car further back is drawn no
+smaller than one in front, and the eye, expecting it to shrink, reads it as
+much bigger: in the 3D view the later, longer cars at the back of the row
+looked huge. The ground fades out from 25 m, so a low view shows no edge. `components/lineup/stage.ts` holds the views, where each car stands in
 them (rear axles in line, oldest first) and how the camera frames them;
 `?view=top|side|front|3d` opens a given view. Dimensions on the labels are
 measured from the meshes once each car has mounted: width ignores the wheel
