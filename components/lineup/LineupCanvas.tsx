@@ -7,6 +7,7 @@ import { Suspense, useEffect, useMemo, useRef, useState, type RefObject } from "
 import { Box3, BufferGeometry, Float32BufferAttribute, NeutralToneMapping, PCFShadowMap, Raycaster, Vector2, Vector3, type Group, type Mesh, type OrthographicCamera } from "three";
 import type { CatalogEntry } from "@/lib/cars/catalog";
 import type { ModelEntry } from "@/components/explorer/models/registry";
+import { LiveryDriver } from "@/components/explorer/LiveryDriver";
 import { SceneLights, StudioEnvironment } from "@/components/explorer/Studio";
 import "@/lib/three/hdrClamp";
 import { AXLE_X, FRONT_PITCH, FRONT_ROW, NARROW, PITCH, ROW, ROW_NARROW, VIEW_DIR, fitOrthographic, labelAnchor, slot, viewPadding, type CarBounds, type LineupView, type V3 } from "./stage";
@@ -82,6 +83,7 @@ export default function LineupCanvas({
       <color attach="background" args={["#07090d"]} />
       <SceneLights size={STAGE_SIZE} shadows />
       <StudioEnvironment />
+      <LiveryDriver cars={cars.map((c) => c.entry.id)} />
       <Cars cars={cars} view={view} onMeasured={onMeasured} />
       <Ground view={view} count={cars.length} />
       <Rig cars={cars} view={view} bounds={bounds} labels={labels} scale={scale} onHover={onHover} />

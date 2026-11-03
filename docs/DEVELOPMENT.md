@@ -45,9 +45,10 @@ The FIA's own X axis runs rearward from datum planes, and each car's
 A rule position "XA = d" is `XA - d`. Build from the datums and the
 regulation boxes rather than eyeballing.
 
-## House livery
+## Liveries
 
-Every era uses the same livery (`kit/livery.ts`), so the eye goes to the parts:
+Every car starts in the same house livery (`kit/livery.ts`), so the eye goes
+to the parts:
 
 - One neutral satin paint on the bodywork shells (survival cell, nose, engine
   cover, sidepods, halo fairing, mirror housings).
@@ -57,8 +58,35 @@ Every era uses the same livery (`kit/livery.ts`), so the eye goes to the parts:
 
 Functional surface detail (cooling louvres, the cockpit's bare-carbon
 interior) goes in the era's `livery.ts` as GLSL in the paint's pattern
-function. The only colours on the car are functional: tyre compound bands,
-lights, and orange high-voltage cabling.
+function, and every livery keeps it. The only colours on the car are
+functional: tyre compound bands, lights, and orange high-voltage cabling.
+
+The livery menu swaps the house paint for McLaren, Ferrari or Williams
+colours, as each team raced in the season the car is built to. They are
+colour-only versions, without logos or sponsors. The choice lives in
+`lib/cars/livery.ts` (`useLivery`), stays as the visitor moves between cars
+and appears in the address as `?livery=mclaren|ferrari|williams`.
+
+Each era's designs are in `models/car-<era>/liveries.ts`. A design is a
+palette and a list of layers painted in order. A layer covers what lies
+inside a side-view outline (x, y), a top-view outline (x, |z|), or both, in
+car millimetres. It can be limited to surfaces facing up, down or sideways
+(`face`), and can fade into another paint along the car (`fade`). Outline
+helpers are in `kit/liveryShapes.ts`: `rect`, `curve`, `below`, `above`,
+`between` and `band`. `glsl` takes over where outlines cannot draw, such as
+the 2021 Williams chevrons. `wings` paints the wing elements and endplates
+(`frontWing`, `frontEndplates`, `rearWing`, `rearEndplates`); any left out
+stay bare carbon.
+
+The paint is one material per era and part group (`bodyPaint`, `wingPaint`).
+A livery change reprograms those materials in place (`applyLivery`, driven
+by `LiveryDriver` in both canvases), so the scene, X-ray and focus modes keep
+their references. In the house livery the wing parts are exact copies of the
+shared carbon materials, so they also share their shaders.
+
+In development, `window.__grid()` paints the open car with a 100 mm grid
+(heavier every 500 mm and 1,000 mm; red across x, black at x = 0, green
+across y, blue across z), for reading outlines off the car.
 
 ## Parts and motion
 
@@ -81,13 +109,14 @@ lights, and orange high-voltage cabling.
 | `kit/wing` | `naca` aerofoils, `wingElement(profile, stations)`, `fullSpan`, `plate` (endplates and fences), `smoothOutline` |
 | `kit/strut` | `foilMember` (streamlined suspension legs), `rod`, `ball`, `wishbone`, `pipe` |
 | `kit/tyre` | `tyreGeometry` (lathe profile resampled by arc length), `tyreMaterial` (compound band + sidewall lettering) |
-| `kit/carMaterials` | `CAR_MAT` (twill carbon, titanium, Inconel, magnesium, rubber, gold foil…), `glow`, `paintColour`, `liveryMaterial` |
+| `kit/carMaterials` | `CAR_MAT` (twill carbon, titanium, Inconel, magnesium, rubber, gold foil…), `glow`, `paintColour` |
+| `kit/livery`, `kit/liveryShapes` | Paint: `bodyPaint`, `wingPaint`, `applyLivery`, the `LiveryDesign` type; outline helpers for designs |
 | `kit/geometry`, `kit/materials`, `kit/Thermal` | copied from visualiz3r: `cached`, `mergeAll`, `roundedBox`, `MAT`, `bentPath`… |
 
-`liveryMaterial` paints the body in a shader from the object-space position,
-so colour splits and stripes stay crisp and run continuously across separate
-panels. Areas the pattern marks as carbon show the twill weave. Loft, wing and
-plate UVs are 1 unit per 100 mm.
+The paint is worked out in a shader from the object-space position, so colour
+splits and stripes stay crisp and run continuously across separate panels.
+Areas the pattern marks as carbon show the twill weave. Loft, wing and plate
+UVs are 1 unit per 100 mm.
 
 ## Checks
 
@@ -96,14 +125,15 @@ The dev server for checks runs on port 4181 (`.claude/launch.json`).
 
 ```bash
 npm run typecheck
-npm test                 # every <Part id> has an explanation, and vice versa
-npm run smoke            # home, every built era (explode, aero, select, X-ray, zoom), the lineup
+npm test                 # every <Part id> has an explanation, and vice versa; every livery is complete
+npm run smoke            # home, every built era (explode, aero, select, X-ray, zoom, each livery), the lineup
 node scripts/screenshot.mjs /2026?clean .screenshots/car.png --wait 9000 \
   --eval "window.__explorer.getState().setExplode(1)" --then-wait 4000
 ```
 
-In development `window.__explorer` is the store and `window.__three` the R3F
-state (`__three.controls` is the CameraControls instance). Neither exists in a
+In development `window.__explorer` is the store, `window.__livery` the livery
+choice and `window.__three` the R3F state (`__three.controls` is the
+CameraControls instance). Neither exists in a
 production build, so `npm run smoke` only runs against a dev server. The home
 page card images live in `public/previews/<era>.webp`.
 
@@ -118,7 +148,8 @@ measured from the meshes once each car has mounted: width ignores the wheel
 nuts, height ignores the cameras. Wheelbase comes from the layout.
 
 Rendering is on demand, and interior parts are hidden, as seven cars would
-otherwise be a lot of draw calls. Three.js pointer events are off: hover and
+otherwise be a lot of draw calls. A livery repaints every car at once, behind
+the same short fade as a change of view. Three.js pointer events are off: hover and
 click test each car's bounding box, not its meshes.
 
 ## Adding an era
@@ -130,3 +161,5 @@ click test each car's bounding box, not its meshes.
 3. Set `built: true` in `lib/cars/catalog.ts`, add the era to `CARS` in
    `scripts/smoke.mjs`, and save a preview at `public/previews/<era>.webp`.
    The lineup picks the new car up from the catalog.
+4. Add `car-<era>/liveries.ts` with a design for every team in `TEAMS`
+   (`lib/cars/livery.ts`), and register it as the entry's `liveries`.

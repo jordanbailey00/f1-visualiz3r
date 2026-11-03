@@ -96,17 +96,38 @@ const ghostMaterial = new MeshBasicMaterial({
   depthWrite: false,
 });
 
-const xrayCache = new WeakMap<Material, Material>();
+let xrayCache = new WeakMap<Material, Material>();
+let xrayMade: Material[] = [];
 function xrayVariant(m: Material): Material {
   let v = xrayCache.get(m);
   if (!v) {
     v = m.clone();
+    // clone() leaves out a livery's pattern; see-through panels keep their colours.
+    if (Object.hasOwn(m, "onBeforeCompile")) {
+      v.onBeforeCompile = m.onBeforeCompile;
+      v.customProgramCacheKey = m.customProgramCacheKey;
+    }
     v.transparent = true;
     v.opacity = 0.16;
     v.depthWrite = false;
     xrayCache.set(m, v);
+    xrayMade.push(v);
   }
   return v;
+}
+
+/** After a livery change: remake the see-through copies, which hold the old paint. */
+export function refreshXray() {
+  const old = xrayMade;
+  xrayCache = new WeakMap();
+  xrayMade = [];
+  modelRoot.current?.traverse((o) => {
+    if (!isMesh(o)) return;
+    const m = meta.get(o);
+    if (!m || m.mode !== "xray" || m.text) return;
+    o.material = Array.isArray(m.baseMaterial) ? m.baseMaterial.map(xrayVariant) : xrayVariant(m.baseMaterial);
+  });
+  for (const v of old) v.dispose();
 }
 
 const noRaycast = (_r: Raycaster, _i: Intersection[]) => {};

@@ -23,6 +23,7 @@ import { useViewShift } from "@/lib/three/viewShift";
 import { visibleOnlyEvents } from "@/lib/three/visibleHits";
 import type { CarInfo } from "@/lib/cars/types";
 import { CarRoot } from "./CarRoot";
+import { LiveryDriver } from "./LiveryDriver";
 import { SceneLights, StudioEnvironment } from "./Studio";
 import { PartLabels } from "./PartLabels";
 import { aeroProgress, explodeProgress } from "./explode";
@@ -59,6 +60,7 @@ export default function CarCanvas({ car, Model, insets = NO_INSETS }: CarCanvasP
         </Bvh>
       </Suspense>
       <PartLabels car={car} />
+      <LiveryDriver cars={[car.id]} />
       <Floor size={car.size} />
       <CameraRig car={car} insets={insets} />
       <ExplodeDriver />

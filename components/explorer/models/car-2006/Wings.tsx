@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { wingPaint } from "./livery";
 import { CAR_MAT } from "../../kit/carMaterials";
 import { cached, mergeAll, roundedBox } from "../../kit/geometry";
 import { mirrorZ } from "../../kit/loft";
@@ -126,7 +127,7 @@ export function FrontMainplane() {
       }),
     [],
   );
-  return <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />;
+  return <mesh geometry={geo} material={wingPaint("frontWing")} castShadow receiveShadow />;
 }
 
 /** The two flaps above the mainplane, set at a pit stop. */
@@ -140,7 +141,7 @@ export function FrontFlaps() {
       }),
     [],
   );
-  return <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />;
+  return <mesh geometry={geo} material={wingPaint("frontWing")} castShadow receiveShadow />;
 }
 
 /**
@@ -210,7 +211,7 @@ export function FrontEndplates() {
       }),
     [],
   );
-  return <mesh geometry={geo} material={CAR_MAT.carbonSatin} castShadow receiveShadow />;
+  return <mesh geometry={geo} material={wingPaint("frontEndplates", "carbonSatin")} castShadow receiveShadow />;
 }
 
 /** The adjusters that set the flaps' angle (turned with a tool on the stationary car). */
@@ -253,7 +254,7 @@ const RW_FLAP: WingStation[] = fullSpan([flapAt(0), flapAt(REAR_WING.half)]);
 
 export function RearMainplane() {
   const geo = useMemo(() => cached("car06-rw-main", () => wingElement(MAIN, RW_MAIN, 6)), []);
-  return <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />;
+  return <mesh geometry={geo} material={wingPaint("rearWing")} castShadow receiveShadow />;
 }
 
 /**
@@ -284,7 +285,7 @@ export function RearFlap() {
       }),
     [],
   );
-  return <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />;
+  return <mesh geometry={geo} material={wingPaint("rearWing")} castShadow receiveShadow />;
 }
 
 /**
@@ -319,7 +320,7 @@ export function RearEndplates() {
       }),
     [],
   );
-  return <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />;
+  return <mesh geometry={geo} material={wingPaint("rearEndplates")} castShadow receiveShadow />;
 }
 
 /** The beam wing: one section either side of the crash structure, more than 150 mm behind the axle, Z = 300–375 (3.10.3). */

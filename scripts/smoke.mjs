@@ -16,6 +16,8 @@ const IGNORE = [/THREE\.Clock: This module has been deprecated/, /GPU stall due 
 /** Eras whose models are built (see lib/cars/catalog.ts). */
 const CARS = ["1998", "2006", "2009", "2014", "2017", "2022", "2026"];
 const ERAS = 7;
+/** Teams in the livery menu (see lib/cars/livery.ts). */
+const TEAMS = ["McLaren", "Ferrari", "Williams"];
 
 const browser = await chromium.launch({ headless: true, args: ["--use-angle=vulkan", "--enable-features=Vulkan", "--ignore-gpu-blocklist"] });
 let failures = 0;
@@ -136,6 +138,17 @@ for (const car of CARS) {
     if (!inGap || f.span < 80) {
       errors.push(`zoom to "${f.id}" put it at (${f.x.toFixed(0)}, ${f.y.toFixed(0)}), ${f.span.toFixed(0)} px across`);
     }
+
+    // Every livery from the menu, with X-ray still on: each compiles its own shaders.
+    await page.evaluate(() => window.__explorer.getState().select(null));
+    for (const team of [...TEAMS, "Plain"]) {
+      await page.locator('[aria-haspopup="menu"]').click();
+      await page.getByRole("menuitemradio", { name: new RegExp(`^${team}`) }).click();
+      await page.waitForTimeout(1200);
+      const asked = new URL(page.url()).searchParams.get("livery");
+      const want = team === "Plain" ? null : team.toLowerCase();
+      if (asked !== want) errors.push(`${team}: the address says livery=${asked}`);
+    }
   });
 }
 
@@ -149,6 +162,12 @@ await check("/lineup", async (page, errors) => {
     const on = await page.locator('nav[aria-label="View"] [data-on="true"]').innerText();
     if (on.toLowerCase() !== view.toLowerCase()) errors.push(`${view}: ${on} is selected instead`);
   }
+  // A livery paints every car at once, and the links to the cars keep it.
+  await page.locator('[aria-haspopup="menu"]').click();
+  await page.getByRole("menuitemradio", { name: /^Ferrari/ }).click();
+  await page.waitForTimeout(2500);
+  const kept = await page.locator('a[href*="livery=ferrari"]').count();
+  if (kept !== CARS.length) errors.push(`${kept} car links keep the Ferrari livery (expected ${CARS.length})`);
 });
 
 await browser.close();

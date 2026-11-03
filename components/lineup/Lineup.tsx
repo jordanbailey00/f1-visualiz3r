@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ControlHint, ExitLink, HudBar } from "@/components/hud/Hud";
 import { CATALOG } from "@/lib/cars/catalog";
+import { useLivery, useLiveryAddress, withLivery } from "@/lib/cars/livery";
 import { aeroProgress, explodeProgress } from "@/components/explorer/explode";
 import { CAR_MODELS } from "@/components/explorer/models/registry";
+import { LiveryMenu } from "@/components/explorer/ui/LiveryMenu";
 import LineupCanvas, { type LineupCar } from "./LineupCanvas";
 import { NARROW, VIEWS, type CarBounds, type LineupView } from "./stage";
 
@@ -30,6 +32,8 @@ export default function Lineup() {
   const labels = useRef<Record<string, HTMLAnchorElement | null>>({});
   const scale = useRef<{ bar: HTMLDivElement | null; text: HTMLSpanElement | null }>({ bar: null, text: null });
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const livery = useLivery((s) => s.livery);
+  useLiveryAddress();
 
   // Parts read these directly; a car left exploded must not carry over.
   useEffect(() => {
@@ -38,15 +42,17 @@ export default function Lineup() {
     return () => clearTimeout(timer.current);
   }, []);
 
-  /** Views differ in layout, so the change happens behind a short fade. */
-  const choose = (next: LineupView) => {
-    if (next === view) return;
+  /** A change happens behind a short fade: views differ in layout, and a livery repaints every car at once. */
+  const behindFade = (change: () => void) => {
     setFading(true);
     clearTimeout(timer.current);
     timer.current = setTimeout(() => {
-      setView(next);
+      change();
       timer.current = setTimeout(() => setFading(false), 60);
     }, 130);
+  };
+  const choose = (next: LineupView) => {
+    if (next !== view) behindFade(() => setView(next));
   };
 
   const onMeasured = useCallback((id: string, b: CarBounds) => setBounds((all) => ({ ...all, [id]: b })), []);
@@ -70,7 +76,7 @@ export default function Lineup() {
               ref={(el) => {
                 labels.current[entry.id] = el;
               }}
-              href={`/${entry.id}`}
+              href={withLivery(`/${entry.id}`, livery)}
               className="pointer-events-auto absolute left-0 top-0 block w-max will-change-transform"
               style={{ visibility: b ? "visible" : "hidden" }}
             >
@@ -115,6 +121,7 @@ export default function Lineup() {
           </nav>
         }
         caption="Every car to the same scale · lengths in mm"
+        right={<LiveryMenu eras={cars.map((c) => c.liveries ?? {})} onChoose={(l) => behindFade(() => useLivery.getState().setLivery(l))} />}
       />
 
       {loaded < cars.length && (

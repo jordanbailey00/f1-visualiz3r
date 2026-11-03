@@ -1,4 +1,4 @@
-import { bodyPaint as housePaint } from "../../kit/livery";
+import { bodyPaint as paintFor, wingPaint as wingFor, type WingRole } from "../../kit/livery";
 import { COCKPIT } from "./layout";
 
 const f = (n: number) => n.toFixed(1);
@@ -17,7 +17,12 @@ const FEATURES = /* glsl */ `
   if (p.x < -1916.0) col = vec3(0.012);
 `;
 
-/** The house livery applied to the 2009–2013 car's bodywork. */
+/** Paint on the 2009–2013 car's bodywork: the house livery or the chosen team's. */
 export function bodyPaint() {
-  return housePaint("2009", null, FEATURES);
+  return paintFor("2009", FEATURES);
+}
+
+/** A wing part that a team livery may paint; bare carbon otherwise. */
+export function wingPaint(role: WingRole, look?: "carbon" | "carbonSatin") {
+  return wingFor("2009", role, look);
 }

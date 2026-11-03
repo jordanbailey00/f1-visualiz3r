@@ -5,12 +5,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ControlHint, ExitLink, HudBar, Lamp, pad } from "@/components/hud/Hud";
 import { PresentationMode } from "@/components/site/PresentationMode";
 import { CATALOG } from "@/lib/cars/catalog";
+import { TEAMS, useLivery, useLiveryAddress, withLivery } from "@/lib/cars/livery";
 import { useExplorer } from "@/lib/cars/store";
 import type { CarInfo } from "@/lib/cars/types";
 import CarCanvas from "./CarCanvas";
+import { applyLivery } from "./kit/livery";
 import { CAR_MODELS } from "./models/registry";
 import { HoverTooltip } from "./ui/HoverTooltip";
 import { InfoPanel } from "./ui/InfoPanel";
+import { LiveryMenu } from "./ui/LiveryMenu";
 import { PartsPanel } from "./ui/PartsPanel";
 import { Toolbar } from "./ui/Toolbar";
 
@@ -24,11 +27,21 @@ export default function CarExplorer({ car }: { car: CarInfo }) {
   const ready = useExplorer((s) => s.carId === car.id);
   const selectedId = useExplorer((s) => s.selectedId);
   const era = CATALOG.findIndex((c) => c.id === car.id) + 1;
+  const livery = useLivery((s) => s.livery);
+  const team = TEAMS.find((t) => t.id === livery);
+  const design = team && entry.liveries?.[team.id];
 
+  useLiveryAddress();
   useEffect(() => {
     useExplorer.getState().setCar(car.id);
-    // Handle for automated visual checks (scripts/screenshot.mjs --eval).
-    if (process.env.NODE_ENV !== "production") (window as unknown as { __explorer: typeof useExplorer }).__explorer = useExplorer;
+    // Handles for automated visual checks (scripts/screenshot.mjs --eval).
+    if (process.env.NODE_ENV !== "production") {
+      Object.assign(window, {
+        __explorer: useExplorer,
+        __livery: useLivery,
+        __grid: () => import("./kit/liveryGrid").then(({ GRID }) => applyLivery(car.id, "grid", GRID)),
+      });
+    }
   }, [car.id]);
 
   // A part readout replaces the brief; the hint retires once a part is picked.
@@ -87,7 +100,7 @@ export default function CarExplorer({ car }: { car: CarInfo }) {
               c.built ? (
                 <Link
                   key={c.id}
-                  href={`/${c.id}`}
+                  href={withLivery(`/${c.id}`, livery)}
                   className="hud-sel"
                   data-on={c.id === car.id}
                   aria-current={c.id === car.id ? "page" : undefined}
@@ -106,11 +119,14 @@ export default function CarExplorer({ car }: { car: CarInfo }) {
             </Link>
           </nav>
         }
-        caption={`Era ${pad(era)} · ${car.years} · ${car.name}`}
+        caption={`Era ${pad(era)} · ${car.years} · ${car.name}${design ? ` · in ${team.name} ${design.car} colours` : ""}`}
         right={
-          <button className="hud-btn" data-on={briefOn} onClick={toggleBrief} title="Car brief (I)" aria-pressed={briefOn}>
-            <Lamp on={briefOn} /> Brief
-          </button>
+          <>
+            <LiveryMenu designs={entry.liveries} />
+            <button className="hud-btn" data-on={briefOn} onClick={toggleBrief} title="Car brief (I)" aria-pressed={briefOn}>
+              <Lamp on={briefOn} /> Brief
+            </button>
+          </>
         }
       />
 

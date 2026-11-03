@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { BoxGeometry, CylinderGeometry, MeshStandardMaterial, type BufferGeometry } from "three";
 import { AeroPivot } from "../../Part";
+import { wingPaint } from "./livery";
 import { CAR_MAT } from "../../kit/carMaterials";
 import { cached, mergeAll, roundedBox } from "../../kit/geometry";
 import { mirrorZ } from "../../kit/loft";
@@ -113,7 +114,7 @@ export function FrontMainplane() {
       }),
     [],
   );
-  return <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />;
+  return <mesh geometry={geo} material={wingPaint("frontWing")} castShadow receiveShadow />;
 }
 
 /** The four flaps and the cascade above them; their angle can be adjusted at a pit stop. */
@@ -130,7 +131,7 @@ export function FrontFlaps() {
       }),
     [],
   );
-  return <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />;
+  return <mesh geometry={geo} material={wingPaint("frontWing")} castShadow receiveShadow />;
 }
 
 /**
@@ -197,7 +198,7 @@ export function FrontEndplates() {
       }),
     [],
   );
-  return <mesh geometry={geo} material={CAR_MAT.carbonSatin} castShadow receiveShadow />;
+  return <mesh geometry={geo} material={wingPaint("frontEndplates", "carbonSatin")} castShadow receiveShadow />;
 }
 
 /** The adjusters that set the flaps' angle (turned with a tool on the stationary car). */
@@ -244,14 +245,14 @@ export const RW_OPEN = 0.36;
 
 export function RearMainplane() {
   const geo = useMemo(() => cached("car14-rw-main", () => wingElement(MAIN, RW_MAIN, 6)), []);
-  return <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />;
+  return <mesh geometry={geo} material={wingPaint("rearWing")} castShadow receiveShadow />;
 }
 
 export function RearFlap() {
   const geo = useMemo(() => cached("car14-rw-flap", () => mergeAll([wingElement(FLAP, RW_FLAP, 6), gurney(RW_FLAP)])), []);
   return (
     <AeroPivot hinge={RW_HINGE} angle={RW_OPEN}>
-      <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />
+      <mesh geometry={geo} material={wingPaint("rearWing")} castShadow receiveShadow />
     </AeroPivot>
   );
 }
@@ -298,7 +299,7 @@ export function RearEndplates() {
   );
   return (
     <group>
-      <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />
+      <mesh geometry={geo} material={wingPaint("rearEndplates")} castShadow receiveShadow />
       <mesh geometry={louvres} material={slotDark} />
     </group>
   );

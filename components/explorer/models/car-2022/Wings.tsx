@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { BoxGeometry, CylinderGeometry } from "three";
 import { AeroPivot } from "../../Part";
+import { wingPaint } from "./livery";
 import { CAR_MAT, glow } from "../../kit/carMaterials";
 import { cached, mergeAll, roundedBox } from "../../kit/geometry";
 import { mirrorZ } from "../../kit/loft";
@@ -115,7 +116,7 @@ export function FrontMainplane() {
       }),
     [],
   );
-  return <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />;
+  return <mesh geometry={geo} material={wingPaint("frontWing")} castShadow receiveShadow />;
 }
 
 /** The three flaps; the top two can be adjusted at a pit stop to trim the balance. */
@@ -128,7 +129,7 @@ export function FrontFlaps() {
       }),
     [],
   );
-  return <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />;
+  return <mesh geometry={geo} material={wingPaint("frontWing")} castShadow receiveShadow />;
 }
 
 /**
@@ -187,7 +188,7 @@ export function FrontEndplates() {
       }),
     [],
   );
-  return <mesh geometry={geo} material={CAR_MAT.carbonSatin} castShadow receiveShadow />;
+  return <mesh geometry={geo} material={wingPaint("frontEndplates", "carbonSatin")} castShadow receiveShadow />;
 }
 
 /** The manual adjusters on the top flaps (turned with a tool on the stationary car; 3.9.7). */
@@ -284,7 +285,7 @@ export function RearMainplane() {
       }),
     [],
   );
-  return <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />;
+  return <mesh geometry={geo} material={wingPaint("rearWing")} castShadow receiveShadow />;
 }
 
 export function RearFlap() {
@@ -302,7 +303,7 @@ export function RearFlap() {
   );
   return (
     <AeroPivot hinge={RW_HINGE} angle={RW_OPEN}>
-      <mesh geometry={geo} material={CAR_MAT.carbon} castShadow receiveShadow />
+      <mesh geometry={geo} material={wingPaint("rearWing")} castShadow receiveShadow />
     </AeroPivot>
   );
 }

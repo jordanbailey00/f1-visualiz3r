@@ -7,12 +7,15 @@ to learn what it does.
 Every car is procedural, real-time geometry built entirely in code: no
 downloaded meshes or photos. Each one is built to its era's FIA technical
 regulations, and all of them wear the same plain livery so the eye goes to the
-engineering.
+engineering. The livery menu can repaint any car in McLaren, Ferrari or
+Williams colours, as each team raced in the season the car is built to:
+unofficial, colour-only versions without logos or sponsors.
 
 The [lineup](https://f1-visualiz3r.vercel.app/lineup) puts every car side by
 side in one scene, drawn with an orthographic camera so that all of them are
 at exactly the same scale, with rear axles in line and their dimensions
-measured from the models themselves.
+measured from the models themselves. Pick a team there to see its colours
+change from era to era.
 
 | Era | Years | Theme |
 | --- | --- | --- |
